@@ -1,0 +1,61 @@
+// Поганий приклад
+class car {
+  String br;
+  int sp;
+
+  car(this.br, this.sp);
+
+  void info() {
+    print('Brand: $br, Speed: $sp km/h');
+  }
+}
+
+// Гарний приклад
+class Car {
+  String brand;
+  int speed;
+
+  Car(this.brand, this.speed);
+
+  void displayInfo() {
+    print('Brand: $brand, Speed: $speed km/h');
+  }
+}
+
+
+//Поганий приклад
+// Обчислюємо факторіал числа.
+int factorial(int n) {
+  if (n == 0) {
+    return 1; // Повертаємо 1.
+  }
+  return n * factorial(n - 1); // Повертаємо n * factorial(n - 1).
+}
+
+// Гарний приклад
+int factorial(int n) {
+  if (n == 0) {
+    // Базовий випадок: факторіал 0 дорівнює 1.
+    return 1;
+  }
+  // Рекурсивний виклик функції.
+  return n * factorial(n - 1);
+}
+
+
+// Поганий приклад
+void main() {
+  Car myCar = Car('Toyota', 120);
+  if (myCar.speed > 100) {myCar.displayInfo();}
+}
+
+// Гарний приклад
+void main() {
+  Car myCar = Car('Toyota', 120);
+
+  if (myCar.speed > 100) {
+    myCar.displayInfo();
+  }
+}
+
+
