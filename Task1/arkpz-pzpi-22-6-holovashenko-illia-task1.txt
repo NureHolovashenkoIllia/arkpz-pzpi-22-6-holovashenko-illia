@@ -1,0 +1,130 @@
+Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+
+до лабораторної роботи №1 з дисципліни
+"Аналіз та рефакторинг коду"
+на тему "Розробка Vision & Scope"
+
+
+
+
+
+Виконав:
+ст. гр. ПЗПІ-22-6
+Головашенко І. В.
+
+Перевірив:
+ст. викл. катедри ПІ
+Сокорчук І. П.
+
+
+
+
+Харків 2024
+1. Розробка Vision & Scope
+
+1.1  Мета роботи: Метою даної роботи є розроблення документу Vision & Scope для програмної системи попередження про пожежі.
+
+1.2  Хід роботи:
+
+1.2.1 Описати важливість проблем, які вирішує програмна система, і пояснити її актуальність. Розглянути інші схожі рішення, які вирішують аналогічні проблеми або застосовують ті ж самі методи для досягнення цілей. Навести способи монетизації проєкту.
+1.2.2 Описати призначення системи, вказати її головні функціональні  можливості.
+1.2.3 Детально описати функції кожної з частин системи та сформулювати вимоги до цих частин.
+1.2.4 Визначити всі зацікавлені сторони проєкту, встановити терміни його реалізації та перерахувати всі технології, які планується використовувати в проєкті.
+
+1.3  Висновок: Під час лабораторної роботи описав проєкт у форматі Vision & Scope.
+Документ Vision & Scope наведено у Додатку А.
+Відеозапис з описом системи доступний за посиланням: ___.
+
+
+
+
+
+
+
+Додаток А
+Документ Vision & Scope
+
+Vision and Scope Document
+for
+FlameGuard
+Версія 1.0
+Підготовлений ст. гр. ПЗПІ-22-6 Головашенко Іллею
+Харківський національний університет радіоелектроніки
+21.11.2024
+
+
+
+
+
+
+Table of Contents
+
+Table of Contents	                                                                                                         4
+Revision History	                                                                                                         4
+1.	Business Requirements	                                                                                     1
+1.1.	Background	                                                                                                         1
+1.2.	Business Opportunity	                                                                                     1
+2.	Vision of the Solution	                                                                                     2
+2.1.	Vision Statement	                                                                                               2
+2.2.	Major Features	                                                                                               2
+3.	Scope and Limitations	                                                                                     2
+3.1.	Scope of Initial Release	                                                                                     2
+3.2.	Scope of Subsequent Releases	                                                                           2
+4.	Business Context	                                                                                               3
+4.1.	Operating Environment	                                                                                     4
+
+Revision History
+Name
+Date
+Reason For Changes
+Version
+Illia Holovashenko
+21.11.2024
+
+1.0
+
+
+
+
+
+1. Business Requirements
+<The business requirements provide the foundation and reference for all detailed requirements development. You may gather business requirements from the customer or development organization’s senior management, an executive sponsor, a project visionary, product management, the marketing department, or other individuals who have a clear sense of why the project is being undertaken and the ultimate value it will provide, both to the business and to customers.>
+1. Background
+<This section summarizes the rationale for the new product. Provide a general description of the history or situation that leads to the recognition that this product should be built.>
+2. Business Opportunity
+<Describe the market opportunity that exists or the business problem that is being solved. Describe the market in which a commercial product will be competing or the environment in which an information system will be used. This may include a brief comparative evaluation of existing products and potential solutions, indicating why the proposed product is attractive. Identify the problems that cannot currently be solved without the product, and how the product fits in with market trends or corporate strategic directions.>
+
+2. Vision of the Solution
+<This section establishes a long-term vision for the system to be built to address the business objectives. This vision will provide the context for making decisions throughout the course of the product development life cycle. The vision should not include detailed functional requirements or project planning information.>
+1. Vision Statement
+<Write a concise vision statement that summarizes the purpose and intent of the new product and describes what the world will be like when it includes the product. The vision statement should reflect a balanced view that will satisfy the needs of diverse customers as well as those of the developing organization. It may be somewhat idealistic, but it should be grounded in the realities of existing or anticipated customer markets, enterprise architectures, organizational strategic directions, and cost and resource limitations.>
+2. Major Features
+<Include a numbered list of the major features of the new product, emphasizing those features  that distinguish it from previous or competing products. Specific user requirements and functional requirements may be traced back to these features.>
+3. Scope and Limitations
+<The project scope defines the concept and range of the proposed solution. It’s also important to define what will not be included in the product. Clarifying the scope and limitations helps to establish realistic expectations of the many stakeholders. It also provides a reference frame against which proposed features and requirements changes can be evaluated. Proposed requirements that are out of scope for the envisioned product must be rejected, unless they are so beneficial that the scope should be enlarged to accommodate them (with accompanying changes in budget, schedule, and/or resources).>
+1. Scope of Initial Release
+<Describe the intended major features that will be included in the initial release of the product. Consider the benefits the product is intended to bring to the various customer communities, and generally describe the product features and quality characteristics that will enable it to provide those benefits. Avoid the temptation to include every possible feature that any potential customer category might conceivably want some day. Focus on those features and product characteristics that will provide the most value, at the most acceptable development cost, to the broadest community.>
+2. Scope of Subsequent Releases
+<If a staged evolution of the product is envisioned over time, indicate which major features will be deferred to later releases.>
+4. Business Context
+<This section summarizes some of the business issues around the project, including profiles of major customer categories, assumptions that went into the project concept, and the management priorities for the project.>
+3. Operating Environment
+<Describe the environment in which the system will be used and define the major availability, reliability, performance, and integrity requirements. This information will significantly influence the definition of the system’s architecture. Consider questions such as:
+* Are the users widely distributed geographically or located close to each other? How many time zones are they in?
+* When do the users in various locations need to access the system?
+* Where is the data generated and used? How far apart are these locations? Does the data from multiple locations need to be combined?
+* Are specific maximum response times known for accessing data that might be stored remotely?
+* Can the users tolerate service interruptions or is continuous access to the system critical for the operation of their business?
+* What access security controls and data protection requirements are needed?>
+
+2
+
+
