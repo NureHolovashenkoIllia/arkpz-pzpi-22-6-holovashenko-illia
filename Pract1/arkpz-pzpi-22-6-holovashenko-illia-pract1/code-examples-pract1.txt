@@ -59,3 +59,87 @@ void main() {
 }
 
 
+// Поганий приклад
+void saveUser(String username, String email) {
+  // Перевірка валідності даних
+  if (username.isEmpty || email.isEmpty) {
+    throw Exception('Invalid data');
+  }
+
+  // Уявне збереження користувача
+  print('Saving user to database...');
+  print('User saved: $username, $email');
+}
+
+// Гарний приклад
+void validateUser(String username, String email) {
+  if (username.isEmpty || email.isEmpty) {
+    throw Exception('Invalid data');
+  }
+}
+
+void saveUserToDatabase(String username, String email) {
+  print('Saving user to database...');
+  print('User saved: $username, $email');
+}
+
+// Основна функція, що викликає інші
+void processUser(String username, String email) {
+  validateUser(username, email);
+  saveUserToDatabase(username, email);
+}
+
+
+// Поганий приклад
+double squareArea(double side) {
+  return side * side;
+}
+
+double rectangleArea(double width, double height) {
+  return width * height;
+}
+
+// Гарний приклад
+double calculateArea(double width, double? height) {
+  height ??= width;
+  return width * height;
+}
+
+
+// Поганий приклад
+/// Deletes the file at [path]. Throws an [IOError] if the file could not
+/// be found. Throws a [PermissionError] if the file is present but could
+/// not be deleted.
+void delete(String path) {
+
+}
+
+// Гарний приклад
+/// Deletes the file at [path].
+///
+/// Throws an [IOError] if the file could not be found. Throws a
+/// [PermissionError] if the file is present but could not be deleted.
+void delete(String path) {
+
+}
+
+
+import 'package:test/test.dart';
+
+void main() {
+  test('add() returns the sum of two positive numbers', () {
+    expect(add(2, 3), equals(5));
+  });
+
+  test('add() returns the sum with negative numbers', () {
+    expect(add(-2, 3), equals(1));
+  });
+
+  test('add() returns the sum with zero', () {
+    expect(add(0, 0), equals(0));
+  });
+}
+
+int add(int a, int b) {
+  return a + b;
+}
