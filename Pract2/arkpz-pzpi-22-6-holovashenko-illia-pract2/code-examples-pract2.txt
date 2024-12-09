@@ -1,0 +1,292 @@
+Refactoring methods
+
+1. Consolidate Duplicate Conditional Fragments (Об'єднання фрагментів, що дублюються, в умовних операторах)
+
+Code before refactoring:
+
+private void addressTextBox_Leave(object sender, EventArgs e)
+{
+    if (string.IsNullOrWhiteSpace(arrivalAddressTextBox.Text))
+    {
+        arrivalAddressTextBox.Text = ADDRESS_PLACEHOLDER;
+        arrivalAddressTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
+        return;
+    }
+
+    if (arrivalAddressPoint == null)
+    {
+        string arrivalAddress = arrivalAddressTextBox.Text;
+        Location location = GetLatLngByAddress(arrivalAddress);
+        if (location != null)
+        {
+            arrivalAddressPoint = new PointLatLng(location.Lat, location.Lon);
+            MakeMarkerByCoordinates(googleMap, arrivalAddressPoint, GMarkerGoogleType.arrow);
+        }
+    }
+    else
+    {
+        string arrivalAddress = toTextBox.Text;
+        Location location = GetLatLngByAddress(arrivalAddress);
+        if (location != null)
+        {
+            RemoveMarkerByCoordinates(googleMap, arrivalAddressPoint);
+            arrivalAddressPoint = new PointLatLng(location.Lat, location.Lon);
+            MakeMarkerByCoordinates(googleMap, arrivalAddressPoint, GMarkerGoogleType.arrow);
+        }
+    }
+}
+
+Code after refactoring:
+
+private void arrivalAddressTextBox_Leave(object sender, EventArgs e)
+{
+    if (string.IsNullOrWhiteSpace(arrivalAddressTextBox.Text))
+    {
+        arrivalAddressTextBox.Text = ADDRESS_PLACEHOLDER;
+        arrivalAddressTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
+        return;
+    }
+
+    string arrivalAddress = arrivalAddressTextBox.Text;
+    Location location = GetLatLngByAddress(arrivalAddress);
+
+    if (location != null)
+    {
+        if (arrivalAddressPoint != null)
+        {
+            RemoveMarkerByCoordinates(googleMap, arrivalAddressPoint);
+        }
+
+        arrivalAddressPoint = new PointLatLng(location.Lat, location.Lon);
+        MakeMarkerByCoordinates(googleMap, arrivalAddressPoint, GMarkerGoogleType.arrow);
+    }
+}
+
+
+2. Duplicate Observed Data (Дублювання видимих даних)
+
+Code before refactoring:
+
+public partial class RoomFilterPopup : ContentPage
+{
+    public event EventHandler<FilterData>? FiltersApplied;
+    private DateTime? _checkInDate = null;
+    private DateTime? _checkOutDate = null;
+    private decimal? _minPrice = null;
+    private decimal? _maxPrice = null;
+
+    public RoomFilterPopup(decimal? minPrice, decimal? maxPrice, DateTime? checkInDate, DateTime? checkOutDate)
+    {
+        InitializeComponent();
+        _minPrice = minPrice;
+        _maxPrice = maxPrice;
+        _checkInDate = checkInDate;
+        _checkOutDate = checkOutDate;
+
+        MinPriceSearchBar.Text = _minPrice?.ToString() ?? string.Empty;
+        MaxPriceSearchBar.Text = _maxPrice?.ToString() ?? string.Empty;
+
+        if (_checkInDate.HasValue)
+        {
+            CheckInDatePicker.Date = _checkInDate.Value;
+        }
+
+        if (_checkOutDate.HasValue)
+        {
+            CheckOutDatePicker.Date = _checkOutDate.Value;
+        }
+    }
+}
+
+Code after refactoring:
+
+public class RoomFilterModel
+{
+    public event Action? FiltersChanged;
+
+    private decimal? _minPrice;
+    private decimal? _maxPrice;
+    private DateTime? _checkInDate;
+    private DateTime? _checkOutDate;
+
+    public decimal? MinPrice
+    {
+        get => _minPrice;
+        set
+        {
+            if (_minPrice != value)
+            {
+                _minPrice = value;
+                NotifyFiltersChanged();
+            }
+        }
+    }
+
+    public decimal? MaxPrice
+    {
+        get => _maxPrice;
+        set
+        {
+            if (_maxPrice != value)
+            {
+                _maxPrice = value;
+                NotifyFiltersChanged();
+            }
+        }
+    }
+
+    public DateTime? CheckInDate
+    {
+        get => _checkInDate;
+        set
+        {
+            if (_checkInDate != value)
+            {
+                _checkInDate = value;
+                NotifyFiltersChanged();
+            }
+        }
+    }
+
+    public DateTime? CheckOutDate
+    {
+        get => _checkOutDate;
+        set
+        {
+            if (_checkOutDate != value)
+            {
+                _checkOutDate = value;
+                NotifyFiltersChanged();
+            }
+        }
+    }
+
+    private void NotifyFiltersChanged()
+    {
+        FiltersChanged?.Invoke();
+    }
+}
+
+public partial class RoomFilterPopup : ContentPage
+{
+    public event EventHandler<RoomFilterModel>? FiltersApplied;
+
+    private readonly RoomFilterModel _roomFilterModel;
+
+    public RoomFilterPopup(RoomFilterModel roomFilterModel)
+    {
+        InitializeComponent();
+        _roomFilterModel = roomFilterModel;
+
+        _roomFilterModel.FiltersChanged += UpdateGUI;
+
+        UpdateGUI();
+    }
+
+    private void UpdateGUI()
+    {
+        MinPriceSearchBar.Text = _roomFilterModel.MinPrice?.ToString() ?? string.Empty;
+        MaxPriceSearchBar.Text = _roomFilterModel.MaxPrice?.ToString() ?? string.Empty;
+
+        if (_roomFilterModel.CheckInDate.HasValue)
+        {
+            CheckInDatePicker.Date = _roomFilterModel.CheckInDate.Value;
+        }
+
+        if (_roomFilterModel.CheckOutDate.HasValue)
+        {
+            CheckOutDatePicker.Date = _roomFilterModel.CheckOutDate.Value;
+        }
+    }
+}
+
+
+3. Replace Subclass with Fields (Заміна підкласу полями)
+
+Code before refactoring:
+
+public class User
+{
+    public string FirstName { get; }
+    public string LastName { get; }
+    public string Email { get; }
+    public string Telephone { get; }
+    public List<Product> Products { get; }
+    public List<Product> Archive { get; }
+
+    public User(string firstName, string lastName, string email,
+        string phoneNumber, List<Product> products, List<Product> archive)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Telephone = email;
+        Email = phoneNumber;
+        Products = products;
+        Archive = archive;
+    }
+}
+
+internal class Salesman: User
+{
+    internal class Salesman: User
+    {
+        public Salesman(string firstName, string lastName, string email,
+            string phoneNumber, List<Product> products, List<Product> archive) :base(firstName, lastName, email,
+                phoneNumber, products, archive) { }
+
+        public string GetJobTitle()
+        {
+            return "Продавець";
+        }
+    }
+}
+
+internal class Customer: User
+{
+    public Customer(string firstName, string lastName, string email,
+        string phoneNumber, List<Product> products, List<Product> archive) : base(firstName, lastName, email,
+            phoneNumber, products, archive) { }
+
+    public string GetJobTitle()
+    {
+        return "Покупець";
+    }
+}
+
+Code after refactoring:
+
+public class User
+{
+    public string FirstName { get; }
+    public string LastName { get; }
+    public string Email { get; }
+    public string Telephone { get; }
+    public List<Product> Products { get; }
+    public List<Product> Archive { get; }
+    public string JobTitle { get; }
+
+    protected User(string firstName, string lastName, string email,
+        string phoneNumber, List<Product> products, List<Product> archive, string jobTitle)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        Telephone = phoneNumber;
+        Products = products;
+        Archive = archive;
+        JobTitle = jobTitle;
+    }
+
+    // Фабричні методи
+    public static User CreateSalesman(string firstName, string lastName, string email,
+        string phoneNumber, List<Product> products, List<Product> archive)
+    {
+        return new User(firstName, lastName, email, phoneNumber, products, archive, "Продавець");
+    }
+
+    public static User CreateCustomer(string firstName, string lastName, string email,
+        string phoneNumber, List<Product> products, List<Product> archive)
+    {
+        return new User(firstName, lastName, email, phoneNumber, products, archive, "Покупець");
+    }
+}

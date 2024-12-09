@@ -67,19 +67,19 @@ FlameGuard
 
 Table of Contents
 
-Table of Contents	                                                                                                         4
-Revision History	                                                                                                         4
-1.	Business Requirements	                                                                                     1
-1.1.	Background	                                                                                                         1
-1.2.	Business Opportunity	                                                                                     1
-2.	Vision of the Solution	                                                                                     2
-2.1.	Vision Statement	                                                                                               2
-2.2.	Major Features	                                                                                               2
-3.	Scope and Limitations	                                                                                     2
-3.1.	Scope of Initial Release	                                                                                     2
-3.2.	Scope of Subsequent Releases	                                                                           2
-4.	Business Context	                                                                                               3
-4.1.	Operating Environment	                                                                                     4
+Table of Contents											4
+Revision History											4
+1.	Business Requirements									1
+1.1.	Background											1
+1.2.	Business Opportunity								1
+2.	Vision of the Solution									2
+2.1.	Vision Statement									2
+2.2.	Major Features										2
+3.	Scope and Limitations									2
+3.1.	Scope of Initial Release							2
+3.2.	Scope of Subsequent Releases						2
+4.	Business Context										3
+4.1.	Operating Environment								4
 
 Revision History
 Name
@@ -126,5 +126,4 @@ Illia Holovashenko
 * What access security controls and data protection requirements are needed?>
 
 2
-
 
