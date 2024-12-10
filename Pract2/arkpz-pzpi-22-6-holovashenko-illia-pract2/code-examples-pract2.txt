@@ -4,61 +4,64 @@ Refactoring methods
 
 Code before refactoring:
 
-private void addressTextBox_Leave(object sender, EventArgs e)
+private void toTextBox_Leave(object sender, EventArgs e)
 {
-    if (string.IsNullOrWhiteSpace(arrivalAddressTextBox.Text))
+    if (string.IsNullOrWhiteSpace(toTextBox.Text))
     {
-        arrivalAddressTextBox.Text = ADDRESS_PLACEHOLDER;
-        arrivalAddressTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
+        toTextBox.Text = ADDRESS_PLACEHOLDER;
+        toTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
         return;
     }
 
-    if (arrivalAddressPoint == null)
+    if (toPoint == null)
     {
-        string arrivalAddress = arrivalAddressTextBox.Text;
-        Location location = GetLatLngByAddress(arrivalAddress);
+        string toAdress = toTextBox.Text;
+        Location location = GetLatLngByAddress(toAdress);
         if (location != null)
         {
-            arrivalAddressPoint = new PointLatLng(location.Lat, location.Lon);
-            MakeMarkerByCoordinates(googleMap, arrivalAddressPoint, GMarkerGoogleType.arrow);
+            toPoint = new PointLatLng(location.Lat, location.Lon);
+            MakeMarkerByCoordinates(googleMap,
+                toPoint, GMarkerGoogleType.arrow);
         }
     }
     else
     {
-        string arrivalAddress = toTextBox.Text;
-        Location location = GetLatLngByAddress(arrivalAddress);
+        string toAdress = toTextBox.Text;
+        Location location = GetLatLngByAddress(toAdress);
         if (location != null)
         {
-            RemoveMarkerByCoordinates(googleMap, arrivalAddressPoint);
-            arrivalAddressPoint = new PointLatLng(location.Lat, location.Lon);
-            MakeMarkerByCoordinates(googleMap, arrivalAddressPoint, GMarkerGoogleType.arrow);
+            RemoveMarkerByCoordinates(googleMap, toPoint);
+            toPoint = new PointLatLng(location.Lat, location.Lon);
+            MakeMarkerByCoordinates(googleMap,
+                toPoint, GMarkerGoogleType.arrow);
         }
     }
 }
 
 Code after refactoring:
 
-private void arrivalAddressTextBox_Leave(object sender, EventArgs e)
+private void toTextBox_Leave(object sender, EventArgs e)
 {
-    if (string.IsNullOrWhiteSpace(arrivalAddressTextBox.Text))
+    if (string.IsNullOrWhiteSpace(toTextBox.Text))
     {
-        arrivalAddressTextBox.Text = ADDRESS_PLACEHOLDER;
-        arrivalAddressTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
+        toTextBox.Text = ADDRESS_PLACEHOLDER;
+        toTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
         return;
     }
 
-    string arrivalAddress = arrivalAddressTextBox.Text;
-    Location location = GetLatLngByAddress(arrivalAddress);
+    string toAdress = toTextBox.Text;
+    Location location = GetLatLngByAddress(toAdress);
 
     if (location != null)
     {
-        if (arrivalAddressPoint != null)
+        if (toPoint != null)
         {
-            RemoveMarkerByCoordinates(googleMap, arrivalAddressPoint);
+            RemoveMarkerByCoordinates(googleMap, toPoint);
         }
 
-        arrivalAddressPoint = new PointLatLng(location.Lat, location.Lon);
-        MakeMarkerByCoordinates(googleMap, arrivalAddressPoint, GMarkerGoogleType.arrow);
+        toPoint = new PointLatLng(location.Lat, location.Lon);
+        MakeMarkerByCoordinates(googleMap,
+            toPoint, GMarkerGoogleType.arrow);
     }
 }
 
@@ -228,24 +231,21 @@ public class User
 
 internal class Salesman: User
 {
-    internal class Salesman: User
-    {
-        public Salesman(string firstName, string lastName, string email,
-            string phoneNumber, List<Product> products, List<Product> archive) :base(firstName, lastName, email,
-                phoneNumber, products, archive) { }
+    public Salesman(string firstName, string lastName, string email,
+        string phoneNumber, List<Product> products, List<Product> archive)
+        :base(firstName, lastName, email, phoneNumber, products, archive) { }
 
-        public string GetJobTitle()
-        {
-            return "Продавець";
-        }
+    public string GetJobTitle()
+    {
+        return "Продавець";
     }
 }
 
 internal class Customer: User
 {
     public Customer(string firstName, string lastName, string email,
-        string phoneNumber, List<Product> products, List<Product> archive) : base(firstName, lastName, email,
-            phoneNumber, products, archive) { }
+        string phoneNumber, List<Product> products, List<Product> archive)
+        : base(firstName, lastName, email, phoneNumber, products, archive) { }
 
     public string GetJobTitle()
     {

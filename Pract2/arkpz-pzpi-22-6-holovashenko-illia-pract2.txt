@@ -40,32 +40,314 @@
 
 Приклади рефакторингу програмного коду:
 1) Метод "Consolidate Duplicate Conditional Fragments"
-Опис проблеми.
-Код до рефакторингу.
-Пояснення обраного методу.
-Код після рефакторингу.
-Переваги отриманого коду після застосування методу.
+Опис: Дублювання коду в усіх гілках умовного оператора – це поширена проблема, яка виникає через поступові зміни коду, особливо при роботі кількох розробників. Для її вирішення необхідно винести спільний код за межі умовного оператора. Це дозволяє не лише усунути зайві повторення, а й знизити ризик помилок, спростивши розуміння та обслуговування програми. Як результат, код стає чистішим і зрозумілішим для підтримки.
+
+
+Код до рефакторингу:
+1. private void toTextBox_Leave(object sender, EventArgs e)
+2. {
+3.     if (string.IsNullOrWhiteSpace(toTextBox.Text))
+4.     {
+5.         toTextBox.Text = ADDRESS_PLACEHOLDER;
+6.         toTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
+7.         return;
+8.     }
+9.
+10.    if (toPoint == null)
+11.    {
+12.        string toAdress = toTextBox.Text;
+13.        Location location = GetLatLngByAddress(toAdress);
+14.        if (location != null)
+15.        {
+16.            toPoint = new PointLatLng(location.Lat, location.Lon);
+17.            MakeMarkerByCoordinates(googleMap,
+18.                toPoint, GMarkerGoogleType.arrow);
+19.        }
+20.    }
+21.    else
+22.    {
+23.        string toAdress = toTextBox.Text;
+24.        Location location = GetLatLngByAddress(toAdress);
+25.        if (location != null)
+26.        {
+27.            RemoveMarkerByCoordinates(googleMap, toPoint);
+28.            toPoint = new PointLatLng(location.Lat, location.Lon);
+29.            MakeMarkerByCoordinates(googleMap,
+30.                toPoint, GMarkerGoogleType.arrow);
+31.        }
+32.    }
+33. }
+
+Код після рефакторингу:
+1. private void toTextBox_Leave(object sender, EventArgs e)
+2. {
+3.     if (string.IsNullOrWhiteSpace(toTextBox.Text))
+4.     {
+5.         toTextBox.Text = ADDRESS_PLACEHOLDER;
+6.         toTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
+7.         return;
+8.     }
+9.
+10.    string toAdress = toTextBox.Text;
+11.    Location location = GetLatLngByAddress(toAdress);
+12.
+13.    if (location != null)
+14.    {
+15.        if (toPoint != null)
+16.        {
+17.            RemoveMarkerByCoordinates(googleMap, toPoint);
+18.        }
+19.
+20.        toPoint = new PointLatLng(location.Lat, location.Lon);
+21.        MakeMarkerByCoordinates(googleMap,
+22.            toPoint, GMarkerGoogleType.arrow);
+23.    }
+24. }
 
 2) Метод "Duplicate Observed Data"
-Опис проблеми.
-Код до рефакторингу.
-Пояснення обраного методу.
-Код після рефакторингу.
-Переваги отриманого коду після застосування методу.
+Опис: Дублювання даних предметної області в класах, які відповідають за графічний інтерфейс ускладнює підтримку системи, особливо якщо потрібна адаптація даних для різних видів інтерфейсу, таких як десктопний або мобільний. Рішенням є перенесення предметної логіки в окремі класи з налаштованою синхронізацією між ними та GUI. Такий підхід забезпечує розділення відповідальності, полегшує читання коду, спрощує додавання нових видів інтерфейсу і дає можливість різним командам працювати над бізнес-логікою та представленням окремо.
+
+Код до рефакторингу:
+1. public partial class RoomFilterPopup : ContentPage
+2. {
+3.     public event EventHandler<FilterData>? FiltersApplied;
+4.     private DateTime? _checkInDate = null;
+5.     private DateTime? _checkOutDate = null;
+6.     private decimal? _minPrice = null;
+7.     private decimal? _maxPrice = null;
+8.
+9.     public RoomFilterPopup(decimal? minPrice, decimal? maxPrice, DateTime? checkInDate, DateTime? checkOutDate)
+10.    {
+11.        InitializeComponent();
+12.        _minPrice = minPrice;
+13.        _maxPrice = maxPrice;
+14.        _checkInDate = checkInDate;
+15.        _checkOutDate = checkOutDate;
+16.
+17.        MinPriceSearchBar.Text = _minPrice?.ToString() ?? string.Empty;
+18.        MaxPriceSearchBar.Text = _maxPrice?.ToString() ?? string.Empty;
+19.
+20.        if (_checkInDate.HasValue)
+21.        {
+22.            CheckInDatePicker.Date = _checkInDate.Value;
+23.        }
+24.
+25.        if (_checkOutDate.HasValue)
+26.        {
+27.            CheckOutDatePicker.Date = _checkOutDate.Value;
+28.        }
+29.    }
+30. }
+
+Код після рефакторингу:
+1. public class RoomFilterModel
+2. {
+3.     public event Action? FiltersChanged;
+4.
+5.     private decimal? _minPrice;
+6.     private decimal? _maxPrice;
+7.     private DateTime? _checkInDate;
+8.     private DateTime? _checkOutDate;
+9.
+10.    public decimal? MinPrice
+11.    {
+12.        get => _minPrice;
+13.        set
+14.        {
+15.            if (_minPrice != value)
+16.            {
+17.                _minPrice = value;
+18.                NotifyFiltersChanged();
+19.            }
+20.        }
+21.    }
+22.
+23.    public decimal? MaxPrice
+24.    {
+25.        get => _maxPrice;
+26.        set
+27.        {
+28.            if (_maxPrice != value)
+29.            {
+30.                _maxPrice = value;
+31.                NotifyFiltersChanged();
+32.            }
+33.        }
+34.    }
+35.
+36.    public DateTime? CheckInDate
+37.    {
+38.        get => _checkInDate;
+39.        set
+40.        {
+41.            if (_checkInDate != value)
+42.            {
+43.                _checkInDate = value;
+44.                NotifyFiltersChanged();
+45.            }
+46.        }
+47.    }
+48.
+49.    public DateTime? CheckOutDate
+50.    {
+51.        get => _checkOutDate;
+52.        set
+53.        {
+54.            if (_checkOutDate != value)
+55.            {
+56.                _checkOutDate = value;
+57.                NotifyFiltersChanged();
+58.            }
+59.        }
+60.    }
+61.
+62.    private void NotifyFiltersChanged()
+63.    {
+64.        FiltersChanged?.Invoke();
+65.    }
+66. }
+67.
+68. public partial class RoomFilterPopup : ContentPage
+69. {
+70.     public event EventHandler<RoomFilterModel>? FiltersApplied;
+71.
+72.     private readonly RoomFilterModel _roomFilterModel;
+73.
+74.     public RoomFilterPopup(RoomFilterModel roomFilterModel)
+75.     {
+76.         InitializeComponent();
+77.         _roomFilterModel = roomFilterModel;
+78.
+79.         _roomFilterModel.FiltersChanged += UpdateGUI;
+80.
+81.         UpdateGUI();
+82.     }
+83.
+84.     private void UpdateGUI()
+85.     {
+86.         MinPriceSearchBar.Text = _roomFilterModel.MinPrice?.ToString() ?? string.Empty;
+87.         MaxPriceSearchBar.Text = _roomFilterModel.MaxPrice?.ToString() ?? string.Empty;
+88.
+89.         if (_roomFilterModel.CheckInDate.HasValue)
+90.         {
+91.             CheckInDatePicker.Date = _roomFilterModel.CheckInDate.Value;
+92.         }
+93.
+94.         if (_roomFilterModel.CheckOutDate.HasValue)
+95.         {
+96.             CheckOutDatePicker.Date = _roomFilterModel.CheckOutDate.Value;
+97.         }
+98.     }
+99. }
 
 3) Метод "Replace Subclass with Fields"
-Опис проблеми.
-Код до рефакторингу.
-Пояснення обраного методу.
-Код після рефакторингу.
-Переваги отриманого коду після застосування методу.
+Опис: Ієрархії підкласів, які відрізняються лише методами з фіксованими значеннями, ускладнюють архітектуру системи без вагомої причини. У таких випадках доцільно замінити ці методи на поля в базовому класі, видаливши підкласи. Це дозволяє зменшити кількість класів, спростити архітектуру та зробити код більш зрозумілим. Такий підхід часто стає актуальним після винесення значної частини функціональності за межі ієрархії, коли підкласи втрачають свою цінність.
 
+Код до рефакторингу:
+1. public class User
+2. {
+3.     public string FirstName { get; }
+4.     public string LastName { get; }
+5.     public string Email { get; }
+6.     public string Telephone { get; }
+7.     public List<Product> Products { get; }
+8.     public List<Product> Archive { get; }
+9.
+10.    public User(string firstName, string lastName, string email,
+11.        string phoneNumber, List<Product> products, List<Product> archive)
+12.    {
+13.        FirstName = firstName;
+14.        LastName = lastName;
+15.        Telephone = email;
+16.        Email = phoneNumber;
+17.        Products = products;
+18.        Archive = archive;
+19.    }
+20. }
+21.
+22. internal class Salesman : User
+23. {
+24.     public Salesman(string firstName, string lastName, string email,
+25.         string phoneNumber, List<Product> products, List<Product> archive)
+26.         : base(firstName, lastName, email, phoneNumber, products, archive) { }
+27.
+28.     public string GetJobTitle()
+29.     {
+30.         return "Продавець";
+31.     }
+32. }
+33.
+34. internal class Customer : User
+35. {
+36.     public Customer(string firstName, string lastName, string email,
+37.         string phoneNumber, List<Product> products, List<Product> archive)
+38.         : base(firstName, lastName, email, phoneNumber, products, archive) { }
+39.
+40.     public string GetJobTitle()
+41.     {
+42.         return "Покупець";
+43.     }
+44. }
+
+Код після рефакторингу:
+1. public class User
+2. {
+3.     public string FirstName { get; }
+4.     public string LastName { get; }
+5.     public string Email { get; }
+6.     public string Telephone { get; }
+7.     public List<Product> Products { get; }
+8.     public List<Product> Archive { get; }
+9.     public string JobTitle { get; }
+10.
+11.    protected User(string firstName, string lastName, string email,
+12.        string phoneNumber, List<Product> products, List<Product> archive, string jobTitle)
+13.    {
+14.        FirstName = firstName;
+15.        LastName = lastName;
+16.        Email = email;
+17.        Telephone = phoneNumber;
+18.        Products = products;
+19.        Archive = archive;
+20.        JobTitle = jobTitle;
+21.    }
+22.
+23.    // Фабричні методи
+24.    public static User CreateSalesman(string firstName, string lastName, string email,
+25.        string phoneNumber, List<Product> products, List<Product> archive)
+26.    {
+27.        return new User(firstName, lastName, email, phoneNumber, products, archive, "Продавець");
+28.    }
+29.
+30.    public static User CreateCustomer(string firstName, string lastName, string email,
+31.        string phoneNumber, List<Product> products, List<Product> archive)
+32.    {
+33.        return new User(firstName, lastName, email, phoneNumber, products, archive, "Покупець");
+34.    }
+35. }
 
 2.3  Висновки: Під час виконання практичної роботи вивчив основні методи рефакторингу коду на основі реальних прикладів з власних програмних проєктів. Навчився ідентифікувати проблеми в коді та використовувати відповідні методи рефакторингу для покращення його якості. В результаті було створено презентацію “Методи рефакторингу коду програмного забезпечення”. Слайди презентації наведено у додатку А.
 Посилання на GitHub репозиторій: https://github.com/NureHolovashenkoIllia/arkpz-pzpi-22-6-holovashenko-illia/tree/main/Pract2
 Посилання на YouTube відео:
+https://www.youtube.com/watch?v=bKlScboXSmE
 
-2.4  Список використаних джерел:
+2.4  Список використаних джерел
+1. Рефакторинг. Refactoring and Design Patterns. URL: https://refactoring.guru/uk/refactoring (дата звернення: 08.12.2024).
+2. Що таке рефакторинг коду і навіщо він потрібний. компанія Wezom. URL: https://wezom.com.ua/ua/blog/refaktoring (дата звернення: 08.12.2024).
+3. Features - IntelliJ IDEA. JetBrains. URL: https://www.jetbrains.com/idea/features/ (дата звернення: 08.12.2024).
+4. Features - ReSharper. JetBrains. URL: https://www.jetbrains.com/resharper/features/ (дата звернення: 08.12.2024).
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -82,5 +364,8 @@
 
 Додаток А
 Слайди презентації
+
+
+
 
 
