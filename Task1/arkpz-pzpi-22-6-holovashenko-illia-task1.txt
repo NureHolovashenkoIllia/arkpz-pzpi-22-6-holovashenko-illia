@@ -35,13 +35,35 @@
 1.2  Хід роботи:
 
 1.2.1 Описати важливість проблем, які вирішує програмна система, і пояснити її актуальність. Розглянути інші схожі рішення, які вирішують аналогічні проблеми або застосовують ті ж самі методи для досягнення цілей. Навести способи монетизації проєкту.
-1.2.2 Описати призначення системи, вказати її головні функціональні  можливості.
+1.2.2 Описати призначення системи, вказати її головні функціональні можливості.
 1.2.3 Детально описати функції кожної з частин системи та сформулювати вимоги до цих частин.
 1.2.4 Визначити всі зацікавлені сторони проєкту, встановити терміни його реалізації та перерахувати всі технології, які планується використовувати в проєкті.
 
-1.3  Висновок: Під час лабораторної роботи описав проєкт у форматі Vision & Scope.
-Документ Vision & Scope наведено у Додатку А.
-Відеозапис з описом системи доступний за посиланням: ___.
+1.3  Висновок: Під час лабораторної роботи описав проєкт “Програмна система попередження про пожежі” у форматі Vision & Scope. Документ Vision & Scope наведено у Додатку А.
+Посилання на GitHub репозиторій: https://github.com/NureHolovashenkoIllia/arkpz-pzpi-22-6-holovashenko-illia/tree/main/Task1
+Посилання на YouTube відео з описом системи:
+
+
+
+
+1.4  Список використаних джерел:
+1. Alarm | Системи безпеки. Проектування Монтаж Обслуговування. Проектування встановлення та обслуговування систем безпеки. URL: https://www.alarm.in.ua/ (дата звернення: 13.12.2024).
+2. Smart Care. Протипожежна безпека. URL: https://thecaresmart.com/service/fire-protection-system (дата звернення: 13.12.2024).
+3. Техноспектр-Сервіс. Протипожежний захист. URL: https://ts.kiev.ua/ (дата звернення: 13.12.2024).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -58,7 +80,7 @@ FlameGuard
 Версія 1.0
 Підготовлений ст. гр. ПЗПІ-22-6 Головашенко Іллею
 Харківський національний університет радіоелектроніки
-21.11.2024
+10.12.2024
 
 
 
@@ -67,19 +89,19 @@ FlameGuard
 
 Table of Contents
 
-Table of Contents											4
-Revision History											4
-1.	Business Requirements									1
-1.1.	Background											1
-1.2.	Business Opportunity								1
-2.	Vision of the Solution									2
-2.1.	Vision Statement									2
-2.2.	Major Features										2
-3.	Scope and Limitations									2
-3.1.	Scope of Initial Release							2
-3.2.	Scope of Subsequent Releases						2
-4.	Business Context										3
-4.1.	Operating Environment								4
+Table of Contents										    5
+Revision History											5
+1.	Business Requirements									5
+1.1.	Background											5
+1.2.	Business Opportunity								7
+2.	Vision of the Solution								    9
+2.1.	Vision Statement									9
+2.2.	Major Features										10
+3.	Scope and Limitations									11
+3.1.	Scope of Initial Release							11
+3.2.	Scope of Subsequent Releases						13
+4.	Business Context										14
+4.1.	Operating Environment								14
 
 Revision History
 Name
@@ -87,7 +109,7 @@ Date
 Reason For Changes
 Version
 Illia Holovashenko
-21.11.2024
+10.12.2024
 
 1.0
 
@@ -96,34 +118,117 @@ Illia Holovashenko
 
 
 1. Business Requirements
-<The business requirements provide the foundation and reference for all detailed requirements development. You may gather business requirements from the customer or development organization’s senior management, an executive sponsor, a project visionary, product management, the marketing department, or other individuals who have a clear sense of why the project is being undertaken and the ultimate value it will provide, both to the business and to customers.>
-1. Background
-<This section summarizes the rationale for the new product. Provide a general description of the history or situation that leads to the recognition that this product should be built.>
-2. Business Opportunity
-<Describe the market opportunity that exists or the business problem that is being solved. Describe the market in which a commercial product will be competing or the environment in which an information system will be used. This may include a brief comparative evaluation of existing products and potential solutions, indicating why the proposed product is attractive. Identify the problems that cannot currently be solved without the product, and how the product fits in with market trends or corporate strategic directions.>
+1.1. Background
+   У сучасному світі питання безпеки житлових та комерційних приміщень набуває все більшої актуальності. Однією з найсерйозніших загроз для таких об’єктів є пожежі, які можуть спричиняти значні матеріальні втрати та загрожувати життю людей. Швидке виявлення та своєчасне попередження про можливу пожежну небезпеку є критично важливими для мінімізації ризиків та забезпечення безпеки.
+   Розробка програмної системи для попередження про пожежі спрямована на підвищення ефективності моніторингу та реагування на потенційні загрози. Вона використовує можливості Інтернету речей (IoT) для збору даних від датчиків диму, температури, газу та вологості, а також сучасні інформаційні технології для аналізу та обробки цих даних у реальному часі. Головна мета проєкту – це створення інтелектуальної системи, яка дозволяє своєчасно виявляти можливі ризики виникнення пожежі, сповіщати користувачів про загрози та забезпечувати доступ до архівних даних для аналізу і підвищення рівня безпеки.
+   Реалізація проєкту дозволить:
+- Знизити ризик виникнення пожеж шляхом оперативного попередження про небезпечні умови;
+- Забезпечити зручний контроль за станом системи через мобільний додаток та веб-інтерфейс;
+- Покращити впровадження заходів безпеки завдяки аналізу даних і звітів зібраних з датчиків.
+   Таким чином, запропонована система сприяє не лише збереженню майна та життя людей, а й підвищенню загального рівня безпеки у сучасному суспільстві.
+
+
+
+
+1.2. Business Opportunity
+   Ринок систем попередження про пожежі активно розвивається через підвищену увагу до безпеки приміщень, інноваційні технології та бажання людей забезпечити комфортне та безпечне проживання в оселі.
+   Серед основних аналогів можна виділити наступні рішення:
+1) Alarm – надає потужну систему протипожежної безпеки, що включає систему димовидалення, автоматичну систему пожежогасіння та ін. Не надає можливості віддалено переглядати стан системи через мобільні додатки чи веб-інтерфейс.
+2) Smart Care – реалізує функції “Розумного дому” для надійного захисту від пожежі. Дозволяє налаштовувати власні сценарії для негайного реагування системи при можливій пожежі. Висока вартість послуг для нових користувачів. Відсутня можливість отримання детальної інформації про стан системи.
+3) Техноспектр-Сервіс – має широкий вибір протипожежних послуг та не високі ціни але має застарілий веб-інтерфейс, та працює лише у місті Київ.
+   Програмна система FlameGuard має кілька ключових переваг:
+- Миттєві сповіщення: у випадку виявлення потенційної небезпеки користувачі отримують повідомлення в реальному часі через мобільний додаток, що мінімізує час реагування;
+- Зручний веб-інтерфейс: інтерактивна панель управління дозволяє легко аналізувати дані та відстежувати історію подій;
+- Аналітика та прогнозування: система здатна виявляти тренди та потенційні ризики завдяки аналізу даних, що підвищує рівень попереджувальної безпеки.
+- Доступна ціна та масштабованість: система орієнтована на різні категорії користувачів (приватних будинків лікарні, адміністративні будівлі), що робить її привабливою для широкого ринку.
+     Модель монетизації
+     Проєкт орієнтується на гнучку модель монетизації, що включає:
+- Продаж обладнання: датчиків та базових модулів для встановлення системи;
+- Підписка на послуги: доступ до аналітики, архівних даних та розширених функцій;
+- Реклама: інтеграція з партнерами, що пропонують послуги технічного обслуговування або страхування.
+     Цільовий ринок
+     Система орієнтована на декілька ключових сегментів:
+- Приватні домогосподарства: забезпечення безпеки житлових приміщень;
+- Малий та середній бізнес: контроль за станом безпеки офісів, складів та магазинів;
+- Державні установи: школи, лікарні, адміністративні будівлі.
+     Проєкт може приносити прибуток завдяки багатоканальній монетизації, знижуючи бар'єри входу для користувачів та забезпечуючи високу конкурентоспроможність. Унікальне поєднання функціональності, доступності та інноваційних технологій створює значний потенціал для масштабування й розширення ринків збуту в майбутньому.
+
 
 2. Vision of the Solution
-<This section establishes a long-term vision for the system to be built to address the business objectives. This vision will provide the context for making decisions throughout the course of the product development life cycle. The vision should not include detailed functional requirements or project planning information.>
-1. Vision Statement
-<Write a concise vision statement that summarizes the purpose and intent of the new product and describes what the world will be like when it includes the product. The vision statement should reflect a balanced view that will satisfy the needs of diverse customers as well as those of the developing organization. It may be somewhat idealistic, but it should be grounded in the realities of existing or anticipated customer markets, enterprise architectures, organizational strategic directions, and cost and resource limitations.>
-2. Major Features
-<Include a numbered list of the major features of the new product, emphasizing those features  that distinguish it from previous or competing products. Specific user requirements and functional requirements may be traced back to these features.>
+2.1. Vision Statement
+   Метою розробки програмної системи попередження про пожежі є створення надійного, інтегрованого рішення для раннього виявлення потенційних пожежних загроз, що забезпечує захист життів і майна. Система використовує сучасні технології, датчики для моніторингу навколишнього середовища, обробляє отримані дані на серверній стороні та надає доступ до інформації через інтуїтивні мобільні та веб-інтерфейси.
+   Цей продукт дозволить користувачам:
+- Отримувати миттєві сповіщення про загрози, такі як підвищення температури, дим чи витік газу;
+- Здійснювати моніторинг стану датчиків у режимі реального часу;
+- Отримувати аналітичні звіти для оцінки безпеки та ефективності роботи системи.
+   У майбутньому використання цієї системи сприятиме значному зниженню ризику пожеж, підвищенню рівня безпеки в приміщеннях різного типу (житлових, лікарняних) та мінімізації людських і матеріальних втрат. Продукт відповідає сучасним потребам безпеки, інтегрується з існуючими рішеннями, є зручним для користувачів і забезпечує високу надійність навіть у складних умовах.
+
+
+
+
+2.2. Major Features
+   MF-1. Раннє виявлення пожежної загрози.
+- Система використовує IoT-датчики для моніторингу температури, диму, вологості та газів, щоб виявляти потенційні загрози на ранніх етапах.
+   MF-2. Миттєві сповіщення про загрози пожежі.
+- Користувачі отримують push-сповіщення на мобільні пристрої у разі виявлення потенційної пожежі, що дає змогу негайно реагувати.
+   MF-3. Моніторинг стану системи у режимі реального часу.
+- Користувачі можуть зручно переглядати всі дані з датчиків, які зображені на інтерактивній панелі, та отримувати доступ до архіву записів через мобільний застосунок або веб-інтерфейс.
+   MF-4. Адміністрування програмної системи.
+- Адміністратори системи контролюють всі аспекти роботи системи, управлінням датчиками, користувачами, сповіщеннями та аналітикою за допомогою веб-інтерфейсу для адміністрування.
+   MF-5. Ведення статистики роботи системи.
+- Автоматизоване створення звітів про роботу системи, включно з історією спрацювань датчиків, кількістю тривог і загальним станом безпеки.
+   MF-6. Виклик служби порятунку.
+- Виклик найближчої пожежної служби при натисненні на кнопку “SOS” користувачем або коли датчики зафіксували потенційну загрозу пожежі. Додатково надсилає точні дані датчиків і геолокацію.
+   MF-7. Виявлення технічних несправностей датчиків.
+- Система інформує користувачів про несправності чи збої в роботі датчиків для забезпечення безперервної роботи.
+   MF-8. Безпека даних.
+- Дані, які надходять від датчиків, а також особисті дані користувача шифруються та захищені від несанкціонованого доступу для забезпечення конфіденційності.
+   MF-9. Реалізація API для обробки запитів.
+- API забезпечує інтеграцію між компонентами системи, такими як IoT-датчики, мобільний додаток та веб-інтерфейс. Воно дозволяє обробляти дані з датчиків, зберігати їх та надавати доступ до інформації в реальному часі.
+
 3. Scope and Limitations
-<The project scope defines the concept and range of the proposed solution. It’s also important to define what will not be included in the product. Clarifying the scope and limitations helps to establish realistic expectations of the many stakeholders. It also provides a reference frame against which proposed features and requirements changes can be evaluated. Proposed requirements that are out of scope for the envisioned product must be rejected, unless they are so beneficial that the scope should be enlarged to accommodate them (with accompanying changes in budget, schedule, and/or resources).>
-1. Scope of Initial Release
-<Describe the intended major features that will be included in the initial release of the product. Consider the benefits the product is intended to bring to the various customer communities, and generally describe the product features and quality characteristics that will enable it to provide those benefits. Avoid the temptation to include every possible feature that any potential customer category might conceivably want some day. Focus on those features and product characteristics that will provide the most value, at the most acceptable development cost, to the broadest community.>
-2. Scope of Subsequent Releases
-<If a staged evolution of the product is envisioned over time, indicate which major features will be deferred to later releases.>
+3.1. Scope of Initial Release
+   Перший випуск програмного продукту сфокусований на базовій функціональності, яка забезпечить основні можливості системи для виявлення пожеж, моніторингу, сповіщення користувачів та аналізу даних. У рамках первинного випуску буде реалізовано серверну частину (API) та IoT-клієнт.
+3.1.1. Серверна частина
+- Обробка даних від датчиків: Прийом даних та їх збереження у базу даних для подальшого аналізу та формування звітів;
+- Авторизація користувачів;
+- Генерація миттєвих сповіщень про загрозі пожежі;
+- Підтримка багатомовності (українська та англійська мови), включаючи різні формати дат та часу;
+- Управління пристроями (Адміністрування): Додавання нових датчиків до системи та налаштування їх параметрів. Видалення або відключення несправних пристроїв.
+- Управління користувачами (Адміністрування): Створення та налаштування облікових записів користувачів, включаючи адміністраторів, та інших ролей. Блокування або видалення облікових записів, які більше не потрібні або викликають підозру. Скидання паролів та управління процесом відновлення доступу.
+- Захист персональних даних відбуватиметься за допомогою шифрування переданих даних, використання токенів для аутентифікації та обмеження доступу на основі ролей;
+- Дані зберігатимуться у реляційній базі даних, з регулярним створенням резервних копій, та видалення застарілих записів відповідно до політики.
+
+3.1.2. IoT-клієнт
+- Моніторинг датчиків: Отримання даних про температуру, дим, вологість та гази з IoT-датчиків.
+- Передача даних на сервер: Підтримка регулярної передачі даних, а також можливість екстреної відправки у разі перевищення критичних значень датчиків.
+- Технічний контроль: Виявлення несправностей датчиків, таких як збої передачі даних або вихід із ладу. Сповіщення сервера про технічні несправності для оперативного реагування.
+
+
+3.1.3. Реалізація бізнес-логіки у першому випуску програмного продукту
+
+- Збір і обробка даних IoT-датчиків: Дані з датчиків передаються на сервер, перевіряються на коректність і порівнюються з критичними значеннями для виявлення загроз.
+- Генерація тривог і сповіщень: У разі перевищення критичних значень генеруються тривоги, які реєструються в базі даних і передаються користувачам через сповіщення.
+- Моніторинг показів датчиків: Користувачі можуть у переглядати стан датчиків через запит до сервера.
+- Виявлення технічних несправностей: Система відстежує регулярність передачі даних від датчиків та сповіщає про несправності.
+- Звітність та аналіз: Дані про події та тривоги зберігаються у базі даних і можуть експортуватися для подальшого аналізу.
+
+3.2. Scope of Subsequent Releases
+   У рамках наступних випусків планується розширення функціональності системи попередження про пожежі. Реалізація нових можливостей охоплюватиме Frontend та Mobile частини для забезпечення інтерактивного досвіду користувачів, а також покращення зручності системи.
+3.2.1. Frontend (Веб-інтерфейс)
+- Відображення стану всіх підключених датчиків у реальному часі.
+- Фільтрування та сортування даних. Можливість перегляду даних датчиків за певний період, критеріями (тип датчика, місцезнаходження).
+- Архів даних про тривоги із зазначенням дати, часу та типу спрацювання. Відображення статистики тривог у графічному форматі (графіки, діаграми).
+- Керування користувачами та пристроями: Зручний інтерфейс для адміністрування облікових записів, ролей та доступів. Додавання, редагування та видалення датчиків через веб-панель.
+- Генерація звітів про показники системи, кількість тривог, технічний стан датчиків. Експорт звітів у формати PDF, Excel для аналізу та документування.
+
+3.2.2. Mobile (Мобільний додаток)
+- Перегляд поточного стану підключених датчиків. Перегляд історії спрацювань і даних з датчиків.
+- Налаштування типів сповіщень (критичні тривоги, технічні збої).
+- Зміна мовного інтерфейсу (підтримка локалізації).
+- Додавання та налаштування датчиків через мобільний додаток. Оперативне відключення несправних датчиків із можливістю перегляду причин.
+
 4. Business Context
-<This section summarizes some of the business issues around the project, including profiles of major customer categories, assumptions that went into the project concept, and the management priorities for the project.>
-3. Operating Environment
-<Describe the environment in which the system will be used and define the major availability, reliability, performance, and integrity requirements. This information will significantly influence the definition of the system’s architecture. Consider questions such as:
-* Are the users widely distributed geographically or located close to each other? How many time zones are they in?
-* When do the users in various locations need to access the system?
-* Where is the data generated and used? How far apart are these locations? Does the data from multiple locations need to be combined?
-* Are specific maximum response times known for accessing data that might be stored remotely?
-* Can the users tolerate service interruptions or is continuous access to the system critical for the operation of their business?
-* What access security controls and data protection requirements are needed?>
-
-2
-
+4.3. Operating Environment
+   У проєкті використовуватимуться сучасні технології та програмні засоби для забезпечення стабільної та ефективної роботи системи попередження про пожежі. IoT-клієнт буде реалізовано на мові програмування C++. Мобільний додаток буде реалізовано на мові Dart із використанням фреймворку Flutter та бібліотек, Firebase Cloud Messaging для сповіщень. Для серверної частини застосовуватиметься Java, Spring Boot, Hibernate ORM і Microsoft SQL Server як СУБД, забезпечуючи масштабованість і надійну інтеграцію з IoT через REST API. Веб-інтерфейс буде реалізовано за допомогою Angular, TypeScript, SCSS і HTML із використанням Angular Material для інтуїтивного користувацького інтерфейсу.
+   Основними вимогами до системи є доступність, надійність, продуктивність та цілісність. Система повинна забезпечувати безперебійний доступ до даних через мобільний додаток і веб-інтерфейс навіть у нестабільних мережах. Надійність буде досягнуто за допомогою резервного копіювання даних і сповіщення про несправності пристроїв. Система має забезпечувати швидку обробку даних від великої кількості датчиків у реальному часі та швидке завантаження інтерфейсів. Цілісність даних забезпечуватиметься транзакційним контролем у СУБД та точністю інформації, отриманої з IoT-пристроїв.
