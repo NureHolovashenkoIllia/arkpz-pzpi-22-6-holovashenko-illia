@@ -41,7 +41,7 @@
 
 1.3  Висновок: Під час лабораторної роботи описав проєкт “Програмна система попередження про пожежі” у форматі Vision & Scope. Документ Vision & Scope наведено у Додатку А.
 Посилання на GitHub репозиторій: https://github.com/NureHolovashenkoIllia/arkpz-pzpi-22-6-holovashenko-illia/tree/main/Task1
-Посилання на YouTube відео з описом системи:
+Посилання на YouTube відео з описом системи: https://www.youtube.com/watch?v=WOI7B9GMquw
 
 
 
