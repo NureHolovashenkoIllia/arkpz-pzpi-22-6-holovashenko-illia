@@ -13,7 +13,6 @@ import java.time.LocalDate;
 public class Building {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Building_id", nullable = false)
     private Integer buildingId;
@@ -26,12 +25,10 @@ public class Building {
     @Column(name = "Building_description", length = 255)
     private String buildingDescription;
 
-    @NotNull
     @Column(name = "Creation_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
     private LocalDate creationDate = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @NotNull
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "User_account_id", nullable = false)
     private UserAccount userAccount;

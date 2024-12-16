@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Size;
 public class UserAccount {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "User_account_id", nullable = false)
     private Integer userAccountId;

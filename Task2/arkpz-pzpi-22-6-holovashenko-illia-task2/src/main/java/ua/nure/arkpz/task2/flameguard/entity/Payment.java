@@ -11,7 +11,6 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Payment {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Payment_id", nullable = false)
     private Integer paymentId;

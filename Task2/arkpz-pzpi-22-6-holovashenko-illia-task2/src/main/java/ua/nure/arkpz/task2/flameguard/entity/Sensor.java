@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class Sensor {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Sensor_id", nullable = false)
     private int sensorId;

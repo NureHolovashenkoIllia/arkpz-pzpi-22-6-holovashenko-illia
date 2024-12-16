@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class Alarm {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Alarm_id", nullable = false)
     private Integer alarmId;
@@ -34,15 +33,10 @@ public class Alarm {
     @Column(name = "Time_resolved")
     private LocalDateTime timeResolved;
 
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "Sensor_id")
     private Sensor sensor;
-
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Building_id")
-    private Building building;
 
     // Getters and Setters
     public Integer getAlarmId() {
@@ -91,14 +85,6 @@ public class Alarm {
 
     public void setSensor(Sensor sensor) {
         this.sensor = sensor;
-    }
-
-    public Building getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(Building building) {
-        this.building = building;
     }
 
     @PrePersist

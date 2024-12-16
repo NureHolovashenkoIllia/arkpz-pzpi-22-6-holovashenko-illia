@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 public class Address {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Address_id", nullable = false)
     private Integer addressId;

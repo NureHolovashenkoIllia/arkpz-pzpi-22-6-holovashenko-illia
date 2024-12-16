@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class Measurement {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Measurement_id", nullable = false)
     private Integer measurementId;
