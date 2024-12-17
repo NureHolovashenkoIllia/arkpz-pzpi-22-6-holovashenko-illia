@@ -1,7 +1,5 @@
 package ua.nure.arkpz.task2.flameguard.dto;
 
-import ua.nure.arkpz.task2.flameguard.entity.UserAccount;
-
 import java.time.LocalDate;
 
 public class BuildingDto {

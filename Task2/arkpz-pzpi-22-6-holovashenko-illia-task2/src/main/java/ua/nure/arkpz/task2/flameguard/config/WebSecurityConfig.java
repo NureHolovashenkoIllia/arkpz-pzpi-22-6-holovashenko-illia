@@ -26,7 +26,8 @@ public class WebSecurityConfig {
                                  "/swagger-ui.html",
                                  "/api/auth/**",
                                  "/api/users/**",
-                                 "/api/buildings/**").permitAll()
+                                 "/api/buildings/**",
+                                 "/api/sensors/**").permitAll()
                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

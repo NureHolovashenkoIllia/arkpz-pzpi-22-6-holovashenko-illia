@@ -39,7 +39,8 @@ public class BuildingController {
         List<BuildingDto> buildings = buildingService.getBuildingsByUser(userId);
 
         if (buildings.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"No buildings found for user with id - " + userId + "\"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"error\":\"No buildings found for user with id - " + userId + "\"}");
         }
         return ResponseEntity.ok(buildings);
     }
@@ -58,7 +59,7 @@ public class BuildingController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBuilding(@PathVariable Integer id,
-                                                   @RequestBody BuildingDto buildingDto) {
+                                            @RequestBody BuildingDto buildingDto) {
         try {
             Optional<BuildingDto> updatedBuilding = buildingService.updateBuilding(id, buildingDto);
             return ResponseEntity.ok(updatedBuilding);
@@ -69,8 +70,13 @@ public class BuildingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBuilding(@PathVariable Integer id) {
-        buildingService.deleteBuilding(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteBuilding(@PathVariable Integer id) {
+        try {
+            buildingService.deleteBuilding(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
     }
 }

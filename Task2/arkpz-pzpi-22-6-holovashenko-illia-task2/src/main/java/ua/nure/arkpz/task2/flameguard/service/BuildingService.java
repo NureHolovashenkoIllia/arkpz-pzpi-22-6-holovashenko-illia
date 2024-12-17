@@ -70,18 +70,21 @@ public class BuildingService {
                 });
     }
 
-    public void deleteBuilding(Integer id) {
-        Building building = getBuildingById(id);
-        buildingRepository.delete(building);
+    public boolean deleteBuilding(Integer id) {
+        if (buildingRepository.existsById(id)) {
+            buildingRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
-    private BuildingDto convertToBuildingDto(Building savedBuilding) {
+    private BuildingDto convertToBuildingDto(Building building) {
         return new BuildingDto(
-                savedBuilding.getBuildingId(),
-                savedBuilding.getBuildingName(),
-                savedBuilding.getBuildingDescription(),
-                savedBuilding.getCreationDate(),
-                savedBuilding.getUserAccount() != null ? savedBuilding.getUserAccount().getUserAccountId() : null
+                building.getBuildingId(),
+                building.getBuildingName(),
+                building.getBuildingDescription(),
+                building.getCreationDate(),
+                building.getUserAccount() != null ? building.getUserAccount().getUserAccountId() : null
         );
     }
 }
