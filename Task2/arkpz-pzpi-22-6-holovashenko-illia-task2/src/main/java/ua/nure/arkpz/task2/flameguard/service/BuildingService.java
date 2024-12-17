@@ -2,16 +2,22 @@ package ua.nure.arkpz.task2.flameguard.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.nure.arkpz.task2.flameguard.dto.BuildingDto;
 import ua.nure.arkpz.task2.flameguard.entity.Building;
+import ua.nure.arkpz.task2.flameguard.entity.UserAccount;
 import ua.nure.arkpz.task2.flameguard.repository.BuildingRepository;
+import ua.nure.arkpz.task2.flameguard.repository.UserAccountRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BuildingService {
 
     @Autowired
     private BuildingRepository buildingRepository;
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     public List<Building> getAllBuildings() {
         return buildingRepository.findAll();
@@ -22,20 +28,46 @@ public class BuildingService {
                 .orElseThrow(() -> new IllegalArgumentException("Building not found with ID: " + id));
     }
 
-    public List<Building> getBuildingsByUser(Integer userAccountId) {
-        return buildingRepository.findByUserAccount_UserAccountId(userAccountId);
+    public List<BuildingDto> getBuildingsByUser(Integer userAccountId) {
+        return buildingRepository.findByUserAccount_UserAccountId(userAccountId)
+                .stream()
+                .map(this::convertToBuildingDto)
+                .toList();
     }
 
-    public Building createBuilding(Building building) {
-        return buildingRepository.save(building);
+    public Optional<BuildingDto> createBuilding(BuildingDto buildingDto) {
+        Optional<UserAccount> userAccount = buildingDto.getUserAccountId() != null
+                ? userAccountRepository.findById(buildingDto.getUserAccountId())
+                : Optional.empty();
+
+        Building building = new Building();
+        building.setBuildingName(buildingDto.getBuildingName());
+        building.setBuildingDescription(buildingDto.getBuildingDescription());
+        building.setCreationDate(buildingDto.getCreationDate());
+        userAccount.ifPresent(building::setUserAccount);
+
+        Building savedBuilding = buildingRepository.save(building);
+        return Optional.of(convertToBuildingDto(savedBuilding));
     }
 
-    public Building updateBuilding(Integer id, Building updatedBuilding) {
-        Building existingBuilding = getBuildingById(id);
-        existingBuilding.setBuildingName(updatedBuilding.getBuildingName());
-        existingBuilding.setBuildingDescription(updatedBuilding.getBuildingDescription());
-        existingBuilding.setCreationDate(updatedBuilding.getCreationDate());
-        return buildingRepository.save(existingBuilding);
+    public Optional<BuildingDto> updateBuilding(Integer id, BuildingDto updatedBuilding) {
+        return buildingRepository.findById(id)
+                .map(building -> {
+                    building.setBuildingName(updatedBuilding.getBuildingName());
+                    building.setBuildingDescription(updatedBuilding.getBuildingDescription());
+                    building.setCreationDate(updatedBuilding.getCreationDate());
+
+                    if (updatedBuilding.getUserAccountId() != null) {
+                        Optional<UserAccount> user = userAccountRepository
+                                .findById(updatedBuilding.getUserAccountId());
+                        user.ifPresent(building::setUserAccount);
+                    } else {
+                        building.setUserAccount(null);
+                    }
+
+                    Building savedBuilding = buildingRepository.save(building);
+                    return convertToBuildingDto(savedBuilding);
+                });
     }
 
     public void deleteBuilding(Integer id) {
@@ -43,7 +75,13 @@ public class BuildingService {
         buildingRepository.delete(building);
     }
 
-    public void deleteAllBuildings() {
-        buildingRepository.deleteAll();
+    private BuildingDto convertToBuildingDto(Building savedBuilding) {
+        return new BuildingDto(
+                savedBuilding.getBuildingId(),
+                savedBuilding.getBuildingName(),
+                savedBuilding.getBuildingDescription(),
+                savedBuilding.getCreationDate(),
+                savedBuilding.getUserAccount() != null ? savedBuilding.getUserAccount().getUserAccountId() : null
+        );
     }
 }

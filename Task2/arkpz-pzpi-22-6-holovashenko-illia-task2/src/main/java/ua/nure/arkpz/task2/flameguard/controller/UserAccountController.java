@@ -30,11 +30,6 @@ public class UserAccountController {
         return ResponseEntity.ok(userAccountService.getUserAccountById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<UserAccount> createUserAccount(@RequestBody UserAccount userAccount) {
-        return ResponseEntity.ok(userAccountService.createUserAccount(userAccount));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<UserAccount> updateUserAccount(@PathVariable Integer id,
                                                          @RequestBody UserAccount updatedUserAccount) {
