@@ -19,13 +19,15 @@ public class BuildingService {
     @Autowired
     private UserAccountRepository userAccountRepository;
 
-    public List<Building> getAllBuildings() {
-        return buildingRepository.findAll();
+    public List<BuildingDto> getAllBuildings() {
+        return buildingRepository.findAll().stream()
+                .map(this::convertToBuildingDto)
+                .toList();
     }
 
-    public Building getBuildingById(Integer id) {
+    public Optional<BuildingDto> getBuildingById(Integer id) {
         return buildingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Building not found with ID: " + id));
+                .map(this::convertToBuildingDto);
     }
 
     public List<BuildingDto> getBuildingsByUser(Integer userAccountId) {

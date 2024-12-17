@@ -111,7 +111,7 @@ public class SensorService {
 
                     Sensor savedSensor = sensorRepository.save(sensor);
                     return convertToSensorDto(savedSensor);
-        });
+                });
     }
 
     // Change sensor status (Enabled|Faulty|Disabled)

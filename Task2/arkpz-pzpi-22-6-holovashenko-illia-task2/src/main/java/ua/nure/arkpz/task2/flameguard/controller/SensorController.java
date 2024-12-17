@@ -65,7 +65,8 @@ public class SensorController {
     public ResponseEntity<?> updateSensor(@PathVariable int id,
                                           @RequestBody SensorDto updatedSensorDto) {
         try {
-            Optional<SensorDto> updatedSensor = sensorService.updateSensor(id, updatedSensorDto);
+            Optional<SensorDto> updatedSensor =
+                    sensorService.updateSensor(id, updatedSensorDto);
             return ResponseEntity.ok(updatedSensor);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -87,7 +88,8 @@ public class SensorController {
 
     // Update building_id field (can set it to null)
     @PatchMapping("/{id}/building")
-    public ResponseEntity<?> updateSensorBuilding(@PathVariable int id, @RequestParam(required = false) Integer buildingId) {
+    public ResponseEntity<?> updateSensorBuilding(@PathVariable int id,
+                                                  @RequestParam(required = false) Integer buildingId) {
         try {
             Optional<SensorDto> updatedSensor = sensorService.updateSensorBuilding(id, buildingId);
             return ResponseEntity.ok(updatedSensor);
@@ -99,7 +101,8 @@ public class SensorController {
 
     // Change sensor status (Enabled|Faulty|Disabled)
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> updateSensorStatus(@PathVariable int id, @RequestParam String status) {
+    public ResponseEntity<?> updateSensorStatus(@PathVariable int id,
+                                                @RequestParam String status) {
         try {
             Optional<SensorDto> updatedSensor = sensorService.updateSensorStatus(id, status);
             return ResponseEntity.ok(updatedSensor);

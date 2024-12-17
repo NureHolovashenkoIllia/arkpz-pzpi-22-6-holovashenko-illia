@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.nure.arkpz.task2.flameguard.dto.AddressDto;
 import ua.nure.arkpz.task2.flameguard.dto.BuildingDto;
+import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
 import ua.nure.arkpz.task2.flameguard.entity.Building;
 import ua.nure.arkpz.task2.flameguard.service.BuildingService;
 import ua.nure.arkpz.task2.flameguard.service.UserAccountService;
@@ -25,13 +27,21 @@ public class BuildingController {
     }
 
     @GetMapping
-    public List<Building> getAllBuildings() {
-        return buildingService.getAllBuildings();
+    public ResponseEntity<List<BuildingDto>> getAllBuildings() {
+        List<BuildingDto> buildings = buildingService.getAllBuildings();
+        return ResponseEntity.ok(buildings);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Building> getBuildingById(@PathVariable Integer id) {
-        return ResponseEntity.ok(buildingService.getBuildingById(id));
+    public ResponseEntity<?> getBuildingById(@PathVariable Integer id) {
+        Optional<BuildingDto> building = buildingService.getBuildingById(id);
+
+        if (building.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(building);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("{\"error\":\"No building found with id - " + id + "\"}");
     }
 
     @GetMapping("/user/{userId}")
