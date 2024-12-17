@@ -43,7 +43,14 @@ public class UserAccountService {
         userAccountRepository.delete(userAccount);
     }
 
-    public UserAccount authorizeUser(String email, String password) {
+    public UserAccount registerUserAccount(UserAccount userAccount) {
+        if (userAccountRepository.findByEmail(userAccount.getEmail()).isPresent()) {
+            throw new RuntimeException("User account with email " + userAccount.getEmail() + " already exists");
+        }
+        return userAccountRepository.save(userAccount);
+    }
+
+    public UserAccount loginUser(String email, String password) {
         Optional<UserAccount> user = userAccountRepository.findByEmail(email);
         if (user.isPresent() && user.get().getUserPassword().equals(password)) {
             return user.get();

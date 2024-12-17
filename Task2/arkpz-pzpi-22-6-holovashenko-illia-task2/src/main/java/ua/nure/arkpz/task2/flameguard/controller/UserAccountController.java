@@ -46,9 +46,4 @@ public class UserAccountController {
         userAccountService.deleteUserAccount(id);
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<UserAccount> loginUser(@RequestParam String email, @RequestParam String password) {
-        return ResponseEntity.ok(userAccountService.authorizeUser(email, password));
-    }
 }
