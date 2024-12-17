@@ -19,20 +19,21 @@ public class SensorController {
     private SensorService sensorService;
 
     @GetMapping
-    public List<Sensor> getAllSensors() {
-        return sensorService.getAllSensors();
+    public ResponseEntity<List<SensorDto>> getAllSensors() {
+        List<SensorDto> sensors = sensorService.getAllSensors();
+        return ResponseEntity.ok(sensors);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getSensorById(@PathVariable int id) {
-        Optional<Sensor> sensor = sensorService.getSensorById(id);
+        Optional<SensorDto> sensor = sensorService.getSensorById(id);
 
         if (sensor.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(sensor);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("{\"error\":\"No sensors found with id - " + id + "\"}");
+                .body("{\"error\":\"No sensor found with id - " + id + "\"}");
     }
 
     @GetMapping("/building/{buildingId}")
@@ -41,7 +42,7 @@ public class SensorController {
 
         if (sensors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("{\"error\":\"No buildings found for building with id - " + buildingId + "\"}");
+                    .body("{\"error\":\"No sensors found for building with id - " + buildingId + "\"}");
         }
         return ResponseEntity.ok(sensors);
     }

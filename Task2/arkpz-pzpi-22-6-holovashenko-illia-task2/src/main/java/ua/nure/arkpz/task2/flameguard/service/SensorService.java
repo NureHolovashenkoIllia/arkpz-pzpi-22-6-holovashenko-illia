@@ -21,13 +21,16 @@ public class SensorService {
     private BuildingRepository buildingRepository;
 
     // Retrieve all sensors
-    public List<Sensor> getAllSensors() {
-        return sensorRepository.findAll();
+    public List<SensorDto> getAllSensors() {
+        return sensorRepository.findAll().stream()
+                .map(this::convertToSensorDto)
+                .toList();
     }
 
     // Retrieve a specific sensor by ID
-    public Optional<Sensor> getSensorById(int id) {
-        return sensorRepository.findById(id);
+    public Optional<SensorDto> getSensorById(int id) {
+        return sensorRepository.findById(id)
+                .map(this::convertToSensorDto);
     }
 
     // Retrieve sensors by building ID

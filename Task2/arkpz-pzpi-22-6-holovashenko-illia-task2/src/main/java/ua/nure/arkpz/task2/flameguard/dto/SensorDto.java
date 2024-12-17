@@ -16,7 +16,8 @@ public class SensorDto {
 
     private Integer buildingId;
 
-    public SensorDto(int sensorId, String sensorName, String sensorType, String sensorStatus, LocalDateTime dateAdded, Integer buildingId) {
+    public SensorDto(int sensorId, String sensorName, String sensorType, String sensorStatus,
+                     LocalDateTime dateAdded, Integer buildingId) {
         this.sensorId = sensorId;
         this.sensorName = sensorName;
         this.sensorType = sensorType;
