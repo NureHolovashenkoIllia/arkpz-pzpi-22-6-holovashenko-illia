@@ -24,10 +24,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/v3/api-docs/**",
                                  "/swagger-ui/**",
                                  "/swagger-ui.html",
-                                 "/api/auth/**",
-                                 "/api/users/**",
-                                 "/api/buildings/**",
-                                 "/api/sensors/**").permitAll()
+                                 "/api/auth/**").permitAll()
                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

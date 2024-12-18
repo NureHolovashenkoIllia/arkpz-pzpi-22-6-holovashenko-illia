@@ -70,8 +70,6 @@ public class AddressService {
                         Optional<Building> building = buildingRepository
                                 .findById(updatedAddressDto.getBuildingId());
                         building.ifPresent(address::setBuilding);
-                    } else {
-                        address.setBuilding(null);
                     }
 
                     Address savedAddress = addressRepository.save(address);

@@ -5,9 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.AddressDto;
-import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
-import ua.nure.arkpz.task2.flameguard.entity.Address;
-import ua.nure.arkpz.task2.flameguard.repository.AddressRepository;
 import ua.nure.arkpz.task2.flameguard.service.AddressService;
 
 import java.util.List;
@@ -19,8 +16,6 @@ public class AddressController {
 
     @Autowired
     private AddressService addressService;
-    @Autowired
-    private AddressRepository addressRepository;
 
     // Retrieve all addresses
     @GetMapping

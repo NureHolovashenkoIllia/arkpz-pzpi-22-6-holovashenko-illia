@@ -4,12 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.nure.arkpz.task2.flameguard.dto.AddressDto;
 import ua.nure.arkpz.task2.flameguard.dto.BuildingDto;
-import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
-import ua.nure.arkpz.task2.flameguard.entity.Building;
 import ua.nure.arkpz.task2.flameguard.service.BuildingService;
-import ua.nure.arkpz.task2.flameguard.service.UserAccountService;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,5 @@
 package ua.nure.arkpz.task2.flameguard.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
