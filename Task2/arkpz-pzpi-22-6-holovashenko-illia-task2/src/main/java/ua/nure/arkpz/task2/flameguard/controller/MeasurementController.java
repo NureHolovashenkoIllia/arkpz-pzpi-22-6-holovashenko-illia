@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
-import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
-import ua.nure.arkpz.task2.flameguard.entity.Measurement;
 import ua.nure.arkpz.task2.flameguard.service.MeasurementService;
 
 import java.util.List;

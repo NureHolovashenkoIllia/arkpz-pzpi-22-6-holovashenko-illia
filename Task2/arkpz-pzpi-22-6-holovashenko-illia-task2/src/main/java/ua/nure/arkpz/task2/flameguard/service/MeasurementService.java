@@ -3,7 +3,6 @@ package ua.nure.arkpz.task2.flameguard.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
-import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
 import ua.nure.arkpz.task2.flameguard.entity.Measurement;
 import ua.nure.arkpz.task2.flameguard.entity.Sensor;
 import ua.nure.arkpz.task2.flameguard.repository.MeasurementRepository;
@@ -11,7 +10,6 @@ import ua.nure.arkpz.task2.flameguard.repository.SensorRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MeasurementService {
