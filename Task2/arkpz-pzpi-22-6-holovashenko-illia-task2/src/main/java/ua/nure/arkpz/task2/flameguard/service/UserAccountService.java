@@ -1,6 +1,7 @@
 package ua.nure.arkpz.task2.flameguard.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.nure.arkpz.task2.flameguard.entity.UserAccount;
 import ua.nure.arkpz.task2.flameguard.repository.UserAccountRepository;
@@ -11,8 +12,14 @@ import java.util.Optional;
 @Service
 public class UserAccountService {
 
+    private final PasswordEncoder passwordEncoder;
     @Autowired
     private UserAccountRepository userAccountRepository;
+
+    public UserAccountService(UserAccountRepository userAccountRepository, PasswordEncoder passwordEncoder) {
+        this.userAccountRepository = userAccountRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<UserAccount> getAllUsers() {
         return userAccountRepository.findAll();
@@ -47,12 +54,14 @@ public class UserAccountService {
         if (userAccountRepository.findByEmail(userAccount.getEmail()).isPresent()) {
             throw new RuntimeException("User account with email " + userAccount.getEmail() + " already exists");
         }
+
+        userAccount.setUserPassword(passwordEncoder.encode(userAccount.getUserPassword()));
         return userAccountRepository.save(userAccount);
     }
 
     public UserAccount loginUser(String email, String password) {
         Optional<UserAccount> user = userAccountRepository.findByEmail(email);
-        if (user.isPresent() && user.get().getUserPassword().equals(password)) {
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getUserPassword())) {
             return user.get();
         } else {
             throw new IllegalArgumentException("Invalid email or password.");
