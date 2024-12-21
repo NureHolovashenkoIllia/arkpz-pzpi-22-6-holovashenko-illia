@@ -1,0 +1,513 @@
+Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+
+до лабораторної роботи №2 з дисципліни
+"Аналіз та рефакторинг коду"
+на тему "Розробка бази даних для серверної частини програмної системи та прикладного програмного інтерфейсу (API)"
+
+
+
+
+Виконав:
+ст. гр. ПЗПІ-22-6
+Головашенко І. В.
+
+Перевірив:
+ст. викл. катедри ПІ
+Сокорчук І. П.
+
+
+
+
+Харків 2024
+2. Розробка бази даних для серверної частини програмної системи та прикладного програмного інтерфейсу (API)
+
+2.1  Мета роботи: Метою даної роботи є розроблення бази даних для серверної частини програмної системи та прикладного програмного інтерфейсу.
+
+2.2  Хід роботи:
+
+2.2.1 Розробити будову програмної системи
+   Реалізована програмна система є веб-застосунком на основі Spring Boot фреймворку мови програмування Java, для збереження даних використовує базу даних MS SQL, автентифікація користувачів відбувається за допомогою JWT токенів.
+   Основні компоненти серверної частини:
+   1. Загальна архітектура
+   Застосунок організовано за архітектурним підходом MVC (Model-View-Controller).
+   Основні компоненти розподілені між такими пакетами:
+* Controller: Обробляє HTTP-запити, виконує маршрутизацію, валідацію даних та формує HTTP-відповіді.
+* Entity: Визначає моделі даних, що відображають структуру таблиць у базі даних з використанням JPA/Hibernate.
+* Repository: Реалізує доступ до бази даних та CRUD-операції за допомогою Spring Data JPA.
+* Service: Містить бізнес-логіку та забезпечує взаємодію між контролерами та репозиторіями.
+
+
+
+   2. Функціональність
+   Серверна частина складається з наступних модулів:
+   2.1 Модуль авторизації: призначений для забезпечення безпеки та управління доступом користувачів до системи. Надає функції реєстрації нових користувачів та авторизації через API. Включає можливість аутентифікації з використанням сучасних технологій безпеки (JWT-токени).
+   2.2 Модуль облікових записів користувачів: реалізує функціонал для створення, редагування, перегляду та видалення облікових записів користувачів. Забезпечує управління ролями (звичайний користувач, адміністратор).
+   2.3 Модуль управління будівлями користувачів: дозволяє користувачам додавати, редагувати та видаляти інформацію про будівлі. Включає прив’язку будівель до користувачів та надання звітів про стан і технічне обслуговування будівель.
+   2.4 Модуль управління обслуговуваннями будівель користувачів: реалізує функціонал для ведення історії технічного обслуговування будівель. Включає створення записів про обслуговування, їх редагування, перегляд і видалення, а також оплату обслуговувань.
+   2.5 Модуль збору та обробки інформації з датчиків: здійснює інтеграцію з IoT-датчиками для отримання даних у реальному часі. Дозволяє відстежувати стан датчиків, генерувати сповіщення про події (пожежі, витік газу) і зберігати дані для подальшого аналізу.
+   2.6 Модуль адміністрування: призначений для управління системою з боку адміністратора. Включає функції управління користувачами, пристроями, налаштуваннями датчиків і системними сповіщеннями. Забезпечує доступ до аналітичних даних.
+   2.7 Модуль документації API: надає автоматичну документацію для всіх API-ендпоінтів за допомогою Swagger. Полегшує взаємодію розробників із системою та забезпечує доступ до повного опису методів через інтерфейс /swagger-ui або /v3/api-docs.
+
+2.2.2 Створити UML діаграму прецедентів для серверної частини системи
+Створив UML діаграму прецедентів для серверної частини системи див. рис. 2.1.
+
+
+
+2.2.3 Створити ER-діаграму даних.
+  Створив ER-діаграму даних див. рис. 2.2.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2.2.4 Розробити базу даних (БД) програмної системи
+Розробив базу даних FlameGuard. Таблиці розробленої бази даних наведено у таблицях 2.1 - 2.8.
+
+
+
+
+
+Таблиця 2.1 – Таблиця “User_account”
+User_account
+User_account_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+First_name
+NVARCHAR(50)
+Last_name
+NVARCHAR(50)
+Phone_number
+NVARCHAR(15) UNIQUE NOT NULL
+Email
+NVARCHAR(100) UNIQUE NOT NULL
+User_password
+NVARCHAR(150) NOT NULL
+User_role
+NVARCHAR(20) NOT NULL DEFAULT 'Customer' CHECK (User_role IN ('Administrator', 'Customer')))
+
+
+Таблиця 2.2 – Таблиця “Building”
+Building
+Building_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+Building_name
+NVARCHAR(100)
+Building_description
+NVARCHAR(255)
+Creation_date
+DATE DEFAULT CURRENT_TIMESTAMP NOT NULL
+User_account_id
+INT FOREIGN KEY REFERENCES User_account(User_account_id)
+ON DELETE CASCADE ON UPDATE CASCADE)
+
+
+
+
+Таблиця 2.3 – Таблиця “Address”
+Address
+Address_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+Country
+NVARCHAR(50)
+City
+NVARCHAR(50)
+Region
+NVARCHAR(50)
+Street
+NVARCHAR(100)
+House_number
+NVARCHAR(10)
+Apartment_number
+NVARCHAR(10)
+Longitude
+DECIMAL(9,6) NOT NULL
+Latitude
+DECIMAL(9,6) NOT NULL
+Building_id
+INT UNIQUE FOREIGN KEY REFERENCES Building(Building_id)
+ON DELETE CASCADE ON UPDATE CASCADE)
+Таблиця 2.4 – Таблиця “Sensor”
+Sensor
+Sensor_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+Sensor_name
+NVARCHAR(100)
+Sensor_type
+NVARCHAR(50) CHECK (Sensor_type IN ('Temperature', 'Gas', 'Smoke', 'Humidity'))
+Sensor_status
+NVARCHAR(20) CHECK (Sensor_status IN ('Enabled', 'Faulty', 'Disabled'))
+Date_added
+DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+Building_id
+INT FOREIGN KEY REFERENCES Building(Building_id)
+ON DELETE SET NULL ON UPDATE CASCADE
+
+Таблиця 2.5 – Таблиця “Measurement”
+Measurement
+Measurement_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+Measurement_value
+FLOAT NOT NULL
+Measurement_unit
+NVARCHAR(20) NOT NULL
+Date_time_received
+DATETIME NOT NULL
+Sensor_id
+INT FOREIGN KEY REFERENCES Sensor(Sensor_id)
+ON DELETE CASCADE ON UPDATE CASCADE
+Таблиця 2.6 – Таблиця “Alarm”
+Alarm
+Alarm_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+Alarm_type
+NVARCHAR(50) NOT NULL CHECK (Alarm_type IN ('Fire alarm', 'Gas Leak', 'Power Outage', 'System Failure'))
+Time_occurred
+DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+Is_resolved
+BIT NOT NULL CHECK (Is_resolved IN (0, 1))
+Time_resolved
+DATETIME
+Sensor_id
+INT FOREIGN KEY REFERENCES Sensor(Sensor_id)
+ON DELETE CASCADE ON UPDATE CASCADE
+Таблиця 2.7 – Таблиця “Maintenance”
+Maintenance
+Maintenance_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+Date_performed
+DATE DEFAULT CURRENT_TIMESTAMP NOT NULL
+Work_description
+NVARCHAR(255)
+Cost
+DECIMAL(10, 2) NOT NULL
+Building_id
+INT FOREIGN KEY REFERENCES Building(Building_id)
+ON DELETE CASCADE ON UPDATE CASCADE
+Таблиця 2.8 – Таблиця “Payment”
+Payment
+Payment_id
+INT PRIMARY KEY IDENTITY(1, 1) NOT NULL
+Payment_method
+NVARCHAR(50) NOT NULL CHECK (Payment_method IN ('Credit Card', 'PayPal', 'Cash'))
+Payment_status
+NVARCHAR(20) NOT NULL CHECK (Payment_status IN ('Pending', 'Completed', 'Failed'))
+Maintenance_id
+INT UNIQUE FOREIGN KEY REFERENCES Maintenance(Maintenance_id)
+ON DELETE CASCADE ON UPDATE CASCADE
+2.2.5 Створити діаграму структури БД
+Створив діаграму структури бази даних FlameGuard див. рис. 2.3.
+
+2.2.6 Створити специфікацію розробленого API
+Створив специфікацію розробленого API див. таблицю 2.9.
+Таблиця 2.9 – Специфікація розробленого API
+POST
+/api/auth/register
+Реєстрація користувачів
+POST
+/api/auth/login
+Авторизація користувачів
+GET
+/api/users
+Отримання всіх користувачів
+GET
+/api/users/{id}
+Отримання даних певного користувача
+PUT
+/api/users/{id}
+Оновлення даних користувача
+DELETE
+/api/users/{id}
+Видалення користувача
+PATCH
+/api/users/{id}/role
+Оновлення ролі користувача
+DELETE
+/api/users/{id}/role
+Скидання ролі користувача до стандартної
+GET
+/api/buildings
+Отримання всіх будівель
+GET
+/api/buildings/{id}
+Отримання даних певної будівлі
+GET
+/api/buildings/user/{userId}
+Отримання будівель певного користувача
+POST
+/api/buildings
+Додавання нової будівлі
+PUT
+/api/buildings/{id}
+Оновлення даних будівлі
+DELETE
+/api/buildings/{id}
+Видалення будівлі
+GET
+/api/addresses
+Отримання всіх адрес
+GET
+/api/addresses/building/{buildingId}
+Отримання адрес для певної будівлі
+POST
+/api/addresses
+Додавання нової адреси
+PUT
+/api/addresses/{id}
+Оновлення даних адреси
+PATCH
+/api/addresses/{id}/building
+Прив'язка адреси до будівлі
+DELETE
+/api/addresses/{id}
+Видалення адреси
+GET
+/api/maintenances
+Отримання всіх обслуговувань
+GET
+/api/maintenances/{id}
+Отримання даних певного обслуговування
+GET
+/api/maintenances/building/{buildingId}
+Отримання обслуговувань для певної будівлі
+POST
+/api/maintenances
+Додавання нового обслуговування
+PUT
+/api/maintenances/{id}
+Оновлення даних обслуговування
+DELETE
+/api/maintenances/{id}
+Видалення обслуговування
+GET
+/api/payments
+Отримання всіх платежів
+GET
+/api/payments/maintenance/{maintenanceId}
+Отримання платежів для певного обслуговування
+POST
+/api/payments
+Додавання нового платежу
+PUT
+/api/payments/{id}
+Оновлення даних платежу
+DELETE
+/api/payments/{id}
+Видалення платежу
+GET
+/api/sensors
+Отримання всіх сенсорів
+GET
+/api/sensors/{id}
+Отримання даних певного сенсору
+GET
+/api/sensors/building/{buildingId}
+Отримання сенсорів для певної будівлі
+POST
+/api/sensors
+Додавання сенсору
+PUT
+/api/sensors/{id}
+Оновлення даних сенсору
+PATCH
+/api/sensors/{id}/status
+Оновлення статусу сенсору
+PATCH
+/api/sensors/{id}/building
+Прив'язка сенсору до будівлі
+DELETE
+/api/sensors/{id}
+Видалення сенсору
+GET
+/api/measurements
+Отримання всіх вимірів
+GET
+/api/measurements/{id}
+Отримання даних певного виміру
+GET
+/api/measurements/sensor/{sensorId}
+Отримання вимірів для певного датчику
+GET
+/api/measurements/sensor/{sensorId}/unit
+Отримання вимірів для певного датчику з певною одиницею виміру
+POST
+/api/measurements
+Додавання нового виміру
+DELETE
+/api/measurements/{id}
+Видалення виміру
+GET
+/api/alarms
+Отримання всіх тривог
+GET
+/api/alarms/{id}
+Отримання даних певної тривоги
+GET
+/api/alarms/type/{type}
+Отримання тривог певного типу
+GET
+/api/alarms/sensor/{sensorId}
+Отримання тривог для певного сенсору
+GET
+/api/alarms/building/{buildingId}
+Отримання тривог для певної будівлі
+POST
+/api/alarms
+Додавання нової тривоги
+PUT
+/api/alarms/{id}
+Оновлення даних тривоги
+DELETE
+/api/alarms/{id}
+Видалення тривоги
+2.2.7 Фрагменти програмного коду розробленого API
+Логіка взаємодії серверної частини з БД.
+Приклад розробленого класу моделі користувача з використанням Hibernate ORM:
+1. @Entity
+2. @Table(name = "User_account", uniqueConstraints = {
+3.         @UniqueConstraint(columnNames = "Phone_number"),
+4.         @UniqueConstraint(columnNames = "Email")
+5. })
+6. public class UserAccount {
+7.
+8.     @Id
+9.     @GeneratedValue(strategy = GenerationType.IDENTITY)
+10.     @Column(name = "User_account_id", nullable = false)
+11.     private Integer userAccountId;
+12.
+13.     @Size(max = 50)
+14.     @Column(name = "First_name", length = 50)
+15.     private String firstName;
+16.
+17.     @Size(max = 50)
+18.     @Column(name = "Last_name", length = 50)
+19.     private String lastName;
+20.
+21.     @NotNull
+22.     @Size(max = 15)
+23.     @Column(name = "Phone_number", length = 15, nullable = false, unique = true)
+24.     private String phoneNumber;
+25.
+26.     @NotNull
+27.     @Size(max = 100)
+28.     @Column(name = "Email", length = 100, nullable = false, unique = true)
+29.     private String email;
+30.
+31.     @NotNull
+32.     @Size(max = 150)
+33.     @Column(name = "User_password", length = 150, nullable = false)
+34.     private String userPassword;
+35.
+36.     @NotNull
+37.     @Size(max = 20)
+38.     @Column(name = "User_role", length = 20, nullable = false)
+39.     private String userRole = "Customer";
+
+
+Приклад коду для доступу до даних користувача через репозиторій:
+1. @Service
+2. public class UserAccountService {
+3.
+4.     private final PasswordEncoder passwordEncoder;
+5.     @Autowired
+6.     private UserAccountRepository userAccountRepository;
+7.
+8.     public UserAccountService(UserAccountRepository userAccountRepository, PasswordEncoder passwordEncoder) {
+9.         this.userAccountRepository = userAccountRepository;
+10.         this.passwordEncoder = passwordEncoder;
+11.     }
+12.
+13.     public List<UserAccount> getAllUsers() {
+14.         return userAccountRepository.findAll();
+15.     }
+16.
+17.     public UserAccount getUserAccountById(Integer id) {
+18.         return userAccountRepository.findById(id)
+19.                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
+20.     }
+21.
+22.     public UserAccount createUserAccount(UserAccount userAccount) {
+23.         return userAccountRepository.save(userAccount);
+24.     }
+25.
+26.     public UserAccount updateUserAccount(Integer id, UserAccount userAccount) {
+27.         UserAccount existingUserAccount = getUserAccountById(id);
+28.         existingUserAccount.setFirstName(userAccount.getFirstName());
+29.         existingUserAccount.setLastName(userAccount.getLastName());
+30.         existingUserAccount.setPhoneNumber(userAccount.getPhoneNumber());
+31.         existingUserAccount.setEmail(userAccount.getEmail());
+32.         existingUserAccount.setUserPassword(userAccount.getUserPassword());
+33.         existingUserAccount.setUserRole(userAccount.getUserRole());
+34.         return userAccountRepository.save(existingUserAccount);
+35.     }
+
+Логіка взаємодії серверної частини з клієнтом:
+Приклад коду для обробки запиту на реєстрацію користувача та відправлення відповіді:
+1. /**
+2.  * REST controller for authorisation management.
+3.  * Provides endpoints for user authentication and registration.
+4.  */
+5. @RestController
+6. @RequestMapping("/api/auth")
+7. @Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
+8. public class AuthController {
+9.
+10.     @Autowired
+11.     private UserAccountService userAccountService;
+12.
+13.     @Autowired
+14.     private JWTUtil jwtUtil;
+15.
+16.     /**
+17.      * Registers a new user account and generates a JWT token.
+18.      *
+19.      * @param userAccount The user account details for registration.
+20.      * @return A response containing the generated JWT token or an error message.
+21.      */
+22.     @Operation(summary = "Register a new user account", description = "Registers a new user and returns a JWT token.")
+23.     @ApiResponses(value = {
+24.             @ApiResponse(responseCode = "201", description = "User successfully registered",
+25.                     content = @Content(mediaType = "application/json",
+26.                             schema = @Schema(example = "{ \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"}"))),
+27.             @ApiResponse(responseCode = "400", description = "Invalid user account details",
+28.                     content = @Content(mediaType = "application/json",
+29.                             schema = @Schema(example = "{ \"error\": \"Invalid user data\"}")))
+30.     })
+31.     @PostMapping("/register")
+32.     public ResponseEntity<String> register(@RequestBody UserAccount userAccount) {
+33.         try {
+34.             UserAccount user = userAccountService.registerUserAccount(userAccount);
+35.             String token = jwtUtil.generateToken(user.getEmail());
+36.             return ResponseEntity.status(HttpStatus.CREATED)
+37.                     .body("{ \"token\":\"" + token + "\"}");
+38.         } catch (Exception e) {
+39.             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+40.                     .body("{ \"error\": \"" + e.getMessage() + "\"}");
+41.         }
+42.     }
+43. }
+
+2.3  Висновок: Під час лабораторної роботи я розробив базу даних для серверної частини програмної системи та прикладний програмний інтерфейс.
+Посилання на GitHub репозиторій: https://github.com/NureHolovashenkoIllia/arkpz-pzpi-22-6-holovashenko-illia/tree/main/Task2
+Посилання на YouTube відео: https://youtu.be/s2mjCQRB8tM
