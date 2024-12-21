@@ -1,5 +1,6 @@
 package ua.nure.arkpz.task2.flameguard.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,8 +9,13 @@ import ua.nure.arkpz.task2.flameguard.service.UserAccountService;
 
 import java.util.List;
 
+/**
+ * REST controller for managing users.
+ * Provides endpoints for CRUD operations on users.
+ */
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Users", description = "Endpoints for managing users")
 public class UserAccountController {
 
     @Autowired
