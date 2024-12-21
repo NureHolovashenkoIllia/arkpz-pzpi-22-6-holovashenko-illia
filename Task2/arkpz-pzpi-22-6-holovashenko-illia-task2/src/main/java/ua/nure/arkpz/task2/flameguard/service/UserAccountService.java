@@ -67,4 +67,26 @@ public class UserAccountService {
             throw new IllegalArgumentException("Invalid email or password.");
         }
     }
+
+    public UserAccount updateUserRole(Integer userAccountId, String role) {
+        UserAccount userAccount = getUserAccountById(userAccountId);
+
+        if (!isValidUserRole(role)) {
+            throw new RuntimeException("Invalid user role: " + role);
+        }
+
+        userAccount.setUserRole(role);
+        return userAccountRepository.save(userAccount);
+    }
+
+    public UserAccount setDefaultUserRole(Integer userAccountId) {
+        UserAccount userAccount = getUserAccountById(userAccountId);
+
+        userAccount.setUserRole("Customer");
+        return userAccountRepository.save(userAccount);
+    }
+
+    public boolean isValidUserRole(String role) {
+        return role.equals("Customer") || role.equals("Administrator");
+    }
 }
