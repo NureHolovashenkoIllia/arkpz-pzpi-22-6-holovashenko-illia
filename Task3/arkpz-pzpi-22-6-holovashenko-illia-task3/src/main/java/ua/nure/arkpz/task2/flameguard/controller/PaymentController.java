@@ -1,5 +1,11 @@
 package ua.nure.arkpz.task2.flameguard.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,21 +16,49 @@ import ua.nure.arkpz.task2.flameguard.service.PaymentService;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * REST controller for managing payments.
+ * Provides endpoints for CRUD operations on payments.
+ */
 @RestController
 @RequestMapping("/api/payments")
+@Tag(name = "Payments", description = "Endpoints for managing payments")
 public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
 
-    // Retrieve all payments
+    /**
+     * Retrieve all payments.
+     *
+     * @return List of all payments.
+     */
+    @Operation(summary = "Get all payments", description = "Retrieve a list of all payments.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of payments",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PaymentDto.class))),
+    })
     @GetMapping
     public ResponseEntity<List<PaymentDto>> getAllPayments() {
         List<PaymentDto> payments = paymentService.getAllPayments();
         return ResponseEntity.ok(payments);
     }
 
-    // Retrieve payment for a specific maintenance
+    /**
+     * Retrieve payment for a specific maintenance.
+     *
+     * @param maintenanceId ID of the maintenance.
+     * @return Payment information for the specified maintenance.
+     */
+    @Operation(summary = "Get payment by maintenance ID", description = "Retrieve payment information for a specific maintenance.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved payment information",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PaymentDto.class))),
+            @ApiResponse(responseCode = "404", description = "Payment not found for the specified maintenance ID",
+                    content = @Content(mediaType = "application/json"))
+    })
     @GetMapping("/maintenance/{maintenanceId}")
     public ResponseEntity<?> getPaymentByMaintenanceId(@PathVariable int maintenanceId) {
         Optional<PaymentDto> payment = paymentService.getPaymentByMaintenanceId(maintenanceId);
@@ -38,7 +72,20 @@ public class PaymentController {
                         maintenanceId + "\"}");
     }
 
-    // Create a new payment
+    /**
+     * Create a new payment.
+     *
+     * @param paymentDto Payment details to create.
+     * @return Details of the created payment.
+     */
+    @Operation(summary = "Create a new payment", description = "Add a new payment to the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Payment successfully created",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PaymentDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input or validation error",
+                    content = @Content(mediaType = "application/json"))
+    })
     @PostMapping
     public ResponseEntity<?> createPayment(@RequestBody PaymentDto paymentDto) {
         try {
@@ -51,7 +98,21 @@ public class PaymentController {
         }
     }
 
-    // Update an existing payment
+    /**
+     * Update an existing payment.
+     *
+     * @param id ID of the payment to update.
+     * @param updatedPaymentDto Updated payment details.
+     * @return Details of the updated payment.
+     */
+    @Operation(summary = "Update a payment", description = "Modify details of an existing payment.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Payment successfully updated",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PaymentDto.class))),
+            @ApiResponse(responseCode = "404", description = "Payment not found with the specified ID",
+                    content = @Content(mediaType = "application/json"))
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePayment(@PathVariable int id,
                                            @RequestBody PaymentDto updatedPaymentDto) {
@@ -65,7 +126,18 @@ public class PaymentController {
         }
     }
 
-    // Delete a payment
+    /**
+     * Delete a payment.
+     *
+     * @param id ID of the payment to delete.
+     */
+    @Operation(summary = "Delete a payment", description = "Remove a payment from the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Payment successfully deleted",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Payment not found with the specified ID",
+                    content = @Content(mediaType = "application/json"))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePayment(@PathVariable int id) {
         try {

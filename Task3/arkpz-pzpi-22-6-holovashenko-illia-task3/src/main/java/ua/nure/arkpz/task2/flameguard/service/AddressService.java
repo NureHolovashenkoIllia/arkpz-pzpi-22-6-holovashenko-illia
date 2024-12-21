@@ -42,6 +42,7 @@ public class AddressService {
         Address address = new Address();
         address.setCountry(addressDto.getCountry());
         address.setCity(addressDto.getCity());
+        address.setRegion(addressDto.getRegion());
         address.setStreet(addressDto.getStreet());
         address.setHouseNumber(addressDto.getHouseNumber());
         address.setApartmentNumber(addressDto.getApartmentNumber());
