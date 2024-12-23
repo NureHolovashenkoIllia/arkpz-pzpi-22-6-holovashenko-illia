@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.AlarmDto;
 import ua.nure.arkpz.task2.flameguard.service.AlarmService;
@@ -42,6 +43,7 @@ public class AlarmController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AlarmDto.class)))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public ResponseEntity<List<AlarmDto>> getAllAlarms() {
         List<AlarmDto> alarms = alarmService.getAllAlarms();
@@ -163,6 +165,7 @@ public class AlarmController {
             @ApiResponse(responseCode = "400", description = "Invalid input data",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PostMapping
     public ResponseEntity<?> createAlarm(@RequestBody AlarmDto alarmDto) {
         try {
@@ -190,6 +193,7 @@ public class AlarmController {
             @ApiResponse(responseCode = "404", description = "Alarm not found",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAlarm(@PathVariable int id,
                                          @RequestBody AlarmDto updatedAlarmDto) {
@@ -214,6 +218,7 @@ public class AlarmController {
             @ApiResponse(responseCode = "404", description = "Alarm not found",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAlarm(@PathVariable int id) {
         try {

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
 import ua.nure.arkpz.task2.flameguard.service.SensorService;
@@ -39,6 +40,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = SensorDto.class)))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public ResponseEntity<List<SensorDto>> getAllSensors() {
         List<SensorDto> sensors = sensorService.getAllSensors();
@@ -113,6 +115,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"Invalid sensor data\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PostMapping
     public ResponseEntity<?> createSensor(@RequestBody SensorDto sensorDto) {
         try {
@@ -141,6 +144,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No sensor found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Customer')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSensor(@PathVariable int id,
                                           @RequestBody SensorDto updatedSensorDto) {
@@ -167,6 +171,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No sensor found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSensor(@PathVariable int id) {
         try {
@@ -194,6 +199,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No sensor found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @PatchMapping("/{id}/building")
     public ResponseEntity<?> updateSensorBuilding(@PathVariable int id,
                                                   @RequestParam(required = false) Integer buildingId) {
@@ -222,6 +228,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No sensor found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> updateSensorStatus(@PathVariable int id,
                                                 @RequestParam String status) {

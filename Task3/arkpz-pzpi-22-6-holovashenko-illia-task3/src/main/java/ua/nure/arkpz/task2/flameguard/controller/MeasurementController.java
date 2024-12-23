@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
 import ua.nure.arkpz.task2.flameguard.service.MeasurementService;
@@ -39,6 +40,7 @@ public class MeasurementController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = MeasurementDto.class)))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public ResponseEntity<List<MeasurementDto>> getAllMeasurements() {
         List<MeasurementDto> measurements = measurementService.getAllMeasurements();
@@ -141,6 +143,7 @@ public class MeasurementController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"Invalid measurement data\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PostMapping
     public ResponseEntity<?> createMeasurement(@RequestBody MeasurementDto measurementDto) {
         try {
@@ -166,6 +169,7 @@ public class MeasurementController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No measurement found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMeasurement(@PathVariable int id) {
         try {

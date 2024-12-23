@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.BuildingDto;
 import ua.nure.arkpz.task2.flameguard.service.BuildingService;
@@ -44,6 +45,7 @@ public class BuildingController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BuildingDto.class)))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public ResponseEntity<List<BuildingDto>> getAllBuildings() {
         List<BuildingDto> buildings = buildingService.getAllBuildings();
@@ -118,6 +120,7 @@ public class BuildingController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"Invalid building data\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PostMapping
     public ResponseEntity<?> createBuilding(@RequestBody BuildingDto buildingDto) {
         try {
@@ -171,6 +174,7 @@ public class BuildingController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No building found with id - {id}\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBuilding(@PathVariable Integer id) {
         try {

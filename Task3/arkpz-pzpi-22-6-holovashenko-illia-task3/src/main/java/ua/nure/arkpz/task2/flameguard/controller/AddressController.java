@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.AddressDto;
 import ua.nure.arkpz.task2.flameguard.service.AddressService;
@@ -39,6 +40,7 @@ public class AddressController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AddressDto.class)))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public ResponseEntity<List<AddressDto>> getAllAddresses() {
         List<AddressDto> addresses = addressService.getAllAddresses();
@@ -85,6 +87,7 @@ public class AddressController {
             @ApiResponse(responseCode = "400", description = "Invalid input data",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PostMapping
     public ResponseEntity<?> createAddress(@RequestBody AddressDto addressDto) {
         try {
@@ -140,6 +143,7 @@ public class AddressController {
             @ApiResponse(responseCode = "404", description = "Address not found",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator')")
     @PatchMapping("/{id}/building")
     public ResponseEntity<?> updateAddressBuilding(@PathVariable int id,
                                                    @RequestParam int buildingId) {
@@ -165,6 +169,7 @@ public class AddressController {
             @ApiResponse(responseCode = "404", description = "Address not found",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAddress(@PathVariable int id) {
         try {

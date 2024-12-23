@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.BuildingDto;
 import ua.nure.arkpz.task2.flameguard.dto.MaintenanceDto;
@@ -41,6 +42,7 @@ public class MaintenanceController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = MaintenanceDto.class))),
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public ResponseEntity<List<MaintenanceDto>> getAllMaintenances() {
         List<MaintenanceDto> maintenances = maintenanceService.getAllMaintenances();
@@ -116,6 +118,7 @@ public class MaintenanceController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"Invalid maintenance data\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PostMapping
     public ResponseEntity<?> createMaintenance(@RequestBody MaintenanceDto maintenanceDto) {
         try {
@@ -144,6 +147,7 @@ public class MaintenanceController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No maintenance found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMaintenance(@PathVariable int id,
                                                @RequestBody MaintenanceDto updatedMaintenanceDto) {
@@ -170,6 +174,7 @@ public class MaintenanceController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No maintenance found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMaintenance(@PathVariable int id) {
         try {
@@ -181,6 +186,7 @@ public class MaintenanceController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('System_Administrator')")
     @PostMapping("/calculate")
     public ResponseEntity<?> calculateMaintenanceCost(@RequestParam int buildingId) {
         try {

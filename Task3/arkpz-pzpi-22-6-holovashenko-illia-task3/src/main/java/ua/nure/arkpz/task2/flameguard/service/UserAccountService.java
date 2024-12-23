@@ -87,7 +87,8 @@ public class UserAccountService {
     }
 
     public boolean isValidUserRole(String role) {
-        return role.equals("Customer") || role.equals("Administrator");
+        return role.equals("Customer") || role.equals("System_Administrator") ||
+                role.equals("Database_Administrator") || role.equals("Global_Administrator");
     }
 }
 

@@ -36,13 +36,15 @@ public class WebSecurityConfig {
                 .requestMatchers("/v3/api-docs/**",
                                  "/swagger-ui/**",
                                  "/swagger-ui.html",
+                                 "/api/auth/**",
                                  "/api/payments/**",
-                                 "/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasAuthority("Administrator")
-                        .requestMatchers("/api/global/**").hasAuthority("Administrator")
-                        .requestMatchers("/api/client/**").hasAuthority("Customer")
-                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().hasAuthority("client")
+                                 "/api/buildings/**",
+                                 "/api/sensors/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasAuthority("System_Administrator")
+                                .requestMatchers("/api/database/**").hasAuthority("Database_Administrator")
+                                .requestMatchers("/api/global/**").hasAuthority("Global_Administrator")
+                                .requestMatchers("/api/**").authenticated()
+                                .anyRequest().hasAuthority("Customer")
                 )
                 .userDetailsService(userDetailsService)
                 .httpBasic(Customizer.withDefaults());

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.PaymentDto;
 import ua.nure.arkpz.task2.flameguard.service.PaymentService;
@@ -39,6 +40,7 @@ public class PaymentController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = PaymentDto.class))),
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public ResponseEntity<List<PaymentDto>> getAllPayments() {
         List<PaymentDto> payments = paymentService.getAllPayments();
@@ -59,6 +61,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "404", description = "Payment not found for the specified maintenance ID",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('Customer', 'Global_Administrator')")
     @GetMapping("/maintenance/{maintenanceId}")
     public ResponseEntity<?> getPaymentByMaintenanceId(@PathVariable int maintenanceId) {
         Optional<PaymentDto> payment = paymentService.getPaymentByMaintenanceId(maintenanceId);
@@ -113,6 +116,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "404", description = "Payment not found with the specified ID",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePayment(@PathVariable int id,
                                            @RequestBody PaymentDto updatedPaymentDto) {
@@ -138,6 +142,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "404", description = "Payment not found with the specified ID",
                     content = @Content(mediaType = "application/json"))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePayment(@PathVariable int id) {
         try {

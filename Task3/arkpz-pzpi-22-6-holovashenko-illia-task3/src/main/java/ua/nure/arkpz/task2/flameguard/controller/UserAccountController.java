@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.entity.UserAccount;
 import ua.nure.arkpz.task2.flameguard.service.UserAccountService;
@@ -43,6 +44,7 @@ public class UserAccountController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = UserAccount.class)))
     })
+    @PreAuthorize("hasAnyAuthority('System_Administrator', 'Global_Administrator')")
     @GetMapping
     public List<UserAccount> getAllUserAccounts() {
         return userAccountService.getAllUsers();
@@ -115,6 +117,7 @@ public class UserAccountController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No user account found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserAccount(@PathVariable Integer id) {
         try {
@@ -142,6 +145,7 @@ public class UserAccountController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No user account found with specified id\"}")))
     })
+    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
     @PatchMapping("/{id}/role")
     public ResponseEntity<?> updateUserAccountRole(@PathVariable Integer id, @RequestParam String role) {
         try {
@@ -168,6 +172,7 @@ public class UserAccountController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No user account found with specified id\"}")))
     })
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}/role")
     public ResponseEntity<?> setDefaultUserAccountRole(@PathVariable Integer id) {
         try {
