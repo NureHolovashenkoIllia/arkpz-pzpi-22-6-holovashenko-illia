@@ -44,6 +44,7 @@ public class PaymentService {
         Payment payment = new Payment();
         payment.setPaymentMethod(paymentDto.getPaymentMethod());
         payment.setPaymentStatus(paymentDto.getPaymentStatus());
+        payment.setPaymentDateTime(paymentDto.getPaymentDateTime());
         maintenance.ifPresent(payment::setMaintenance);
 
         Payment savedPayment = paymentRepository.save(payment);
@@ -56,6 +57,7 @@ public class PaymentService {
                 .map(payment -> {
                     payment.setPaymentMethod(updatedPaymentDto.getPaymentMethod());
                     payment.setPaymentStatus(updatedPaymentDto.getPaymentStatus());
+                    payment.setPaymentDateTime(updatedPaymentDto.getPaymentDateTime());
 
                     if (updatedPaymentDto.getMaintenanceId() != null) {
                         Optional<Maintenance> maintenance = maintenanceRepository
@@ -96,6 +98,7 @@ public class PaymentService {
                 payment.getPaymentId(),
                 payment.getPaymentMethod(),
                 payment.getPaymentStatus(),
+                payment.getPaymentDateTime(),
                 payment.getMaintenance() != null ? payment.getMaintenance().getMaintenanceId() : null
         );
     }

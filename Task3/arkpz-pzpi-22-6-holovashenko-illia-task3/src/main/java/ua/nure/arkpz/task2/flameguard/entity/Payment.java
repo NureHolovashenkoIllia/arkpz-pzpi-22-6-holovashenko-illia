@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Payment")
 public class Payment {
@@ -24,6 +26,10 @@ public class Payment {
     @Size(max = 20)
     @Column(name = "Payment_status", length = 20, nullable = false)
     private String paymentStatus;
+
+    @NotNull
+    @Column(name = "Payment_datetime", nullable = false)
+    private LocalDateTime paymentDateTime;
 
     @OneToOne
     @NotNull
@@ -72,5 +78,13 @@ public class Payment {
         if (!paymentStatus.matches("Pending|Completed|Failed")) {
             throw new IllegalArgumentException("Invalid payment status: " + paymentStatus);
         }
+    }
+
+    public @NotNull LocalDateTime getPaymentDateTime() {
+        return paymentDateTime;
+    }
+
+    public void setPaymentDateTime(@NotNull LocalDateTime paymentDateTime) {
+        this.paymentDateTime = paymentDateTime;
     }
 }

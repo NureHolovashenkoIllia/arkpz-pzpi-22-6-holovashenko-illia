@@ -1,5 +1,7 @@
 package ua.nure.arkpz.task2.flameguard.dto;
 
+import java.time.LocalDateTime;
+
 public class PaymentDto {
 
     private Integer paymentId;
@@ -8,13 +10,18 @@ public class PaymentDto {
 
     private String paymentStatus;
 
+    private LocalDateTime paymentDateTime;
+
     private Integer maintenanceId;
 
-    public PaymentDto(Integer paymentId, String paymentMethod, String paymentStatus,
+    public PaymentDto() {}
+
+    public PaymentDto(Integer paymentId, String paymentMethod, String paymentStatus, LocalDateTime paymentDateTime,
                       Integer maintenanceId) {
         this.paymentId = paymentId;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
+        this.paymentDateTime = paymentDateTime;
         this.maintenanceId = maintenanceId;
     }
 
@@ -48,5 +55,13 @@ public class PaymentDto {
 
     public void setMaintenanceId(Integer maintenanceId) {
         this.maintenanceId = maintenanceId;
+    }
+
+    public LocalDateTime getPaymentDateTime() {
+        return paymentDateTime;
+    }
+
+    public void setPaymentDateTime(LocalDateTime paymentDateTime) {
+        this.paymentDateTime = paymentDateTime;
     }
 }
