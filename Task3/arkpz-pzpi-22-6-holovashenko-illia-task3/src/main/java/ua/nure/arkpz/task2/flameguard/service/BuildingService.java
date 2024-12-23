@@ -45,6 +45,7 @@ public class BuildingService {
         Building building = new Building();
         building.setBuildingName(buildingDto.getBuildingName());
         building.setBuildingDescription(buildingDto.getBuildingDescription());
+        building.setBuildingType(buildingDto.getBuildingType());
         building.setCreationDate(buildingDto.getCreationDate());
         userAccount.ifPresent(building::setUserAccount);
 
@@ -57,6 +58,7 @@ public class BuildingService {
                 .map(building -> {
                     building.setBuildingName(updatedBuilding.getBuildingName());
                     building.setBuildingDescription(updatedBuilding.getBuildingDescription());
+                    building.setBuildingType(updatedBuilding.getBuildingType());
                     building.setCreationDate(updatedBuilding.getCreationDate());
 
                     if (updatedBuilding.getUserAccountId() != null) {
@@ -85,6 +87,7 @@ public class BuildingService {
                 building.getBuildingId(),
                 building.getBuildingName(),
                 building.getBuildingDescription(),
+                building.getBuildingType(),
                 building.getCreationDate(),
                 building.getUserAccount() != null ? building.getUserAccount().getUserAccountId() : null
         );

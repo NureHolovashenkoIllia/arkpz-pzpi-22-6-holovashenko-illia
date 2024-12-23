@@ -1,6 +1,7 @@
 package ua.nure.arkpz.task2.flameguard.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,6 +24,11 @@ public class Building {
     @Size(max = 255)
     @Column(name = "Building_description", length = 255)
     private String buildingDescription;
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "Building_type", length = 50)
+    private String buildingType;
 
     @Column(name = "Creation_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
     private LocalDate creationDate = LocalDate.now();
@@ -71,5 +77,13 @@ public class Building {
 
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
+    }
+
+    public @Size(max = 50) @NotNull String getBuildingType() {
+        return buildingType;
+    }
+
+    public void setBuildingType(@Size(max = 50) @NotNull String buildingType) {
+        this.buildingType = buildingType;
     }
 }

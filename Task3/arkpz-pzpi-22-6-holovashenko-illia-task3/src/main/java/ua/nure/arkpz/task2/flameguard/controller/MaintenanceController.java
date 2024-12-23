@@ -15,6 +15,7 @@ import ua.nure.arkpz.task2.flameguard.dto.MaintenanceDto;
 import ua.nure.arkpz.task2.flameguard.dto.PaymentDto;
 import ua.nure.arkpz.task2.flameguard.service.MaintenanceService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -176,6 +177,17 @@ public class MaintenanceController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/calculate")
+    public ResponseEntity<?> calculateMaintenanceCost(@RequestParam int buildingId) {
+        try {
+            BigDecimal cost = maintenanceService.calculateMaintenanceCost(buildingId);
+            return ResponseEntity.ok(cost);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
