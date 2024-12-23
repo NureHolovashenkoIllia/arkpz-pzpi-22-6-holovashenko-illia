@@ -2,22 +2,32 @@ package ua.nure.arkpz.task2.flameguard.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.nure.arkpz.task2.flameguard.dto.DefaultSettings;
 import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
 import ua.nure.arkpz.task2.flameguard.entity.Building;
 import ua.nure.arkpz.task2.flameguard.entity.Sensor;
+import ua.nure.arkpz.task2.flameguard.entity.SensorSettings;
 import ua.nure.arkpz.task2.flameguard.repository.BuildingRepository;
 import ua.nure.arkpz.task2.flameguard.repository.SensorRepository;
+import ua.nure.arkpz.task2.flameguard.repository.SensorSettingsRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import static ua.nure.arkpz.task2.flameguard.dto.DefaultSettings.getDefaultSettings;
 
 @Service
 public class SensorService {
 
     @Autowired
     private SensorRepository sensorRepository;
+
     @Autowired
     private BuildingRepository buildingRepository;
+
+    @Autowired
+    private SensorSettingsRepository sensorSettingsRepository;
 
     // Retrieve all sensors
     public List<SensorDto> getAllSensors() {
@@ -52,10 +62,15 @@ public class SensorService {
         sensor.setSensorName(sensorDto.getSensorName());
         sensor.setSensorType(sensorDto.getSensorType());
         sensor.setSensorStatus(sensorDto.getSensorStatus());
+        sensor.setLastDataReceived(sensorDto.getLastDataReceived());
         sensor.setDateAdded(sensorDto.getDateAdded());
         building.ifPresent(sensor::setBuilding);
 
         Sensor savedSensor = sensorRepository.save(sensor);
+
+        // Initialize default settings for the sensor
+        initializeSensorSettings(savedSensor);
+
         return Optional.of(convertToSensorDto(savedSensor));
     }
 
@@ -66,6 +81,7 @@ public class SensorService {
                     sensor.setSensorName(updatedSensorDto.getSensorName());
                     sensor.setSensorType(updatedSensorDto.getSensorType());
                     sensor.setSensorStatus(updatedSensorDto.getSensorStatus());
+                    sensor.setLastDataReceived(updatedSensorDto.getLastDataReceived());
                     sensor.setDateAdded(updatedSensorDto.getDateAdded());
 
                     if (updatedSensorDto.getBuildingId() != null) {
@@ -143,8 +159,25 @@ public class SensorService {
                 sensor.getSensorName(),
                 sensor.getSensorType(),
                 sensor.getSensorStatus(),
+                sensor.getLastDataReceived(),
                 sensor.getDateAdded(),
                 sensor.getBuilding() != null ? sensor.getBuilding().getBuildingId() : null
         );
+    }
+
+    // Initialize default settings for a sensor
+    private void initializeSensorSettings(Sensor sensor) {
+        SensorSettings sensorSettings = new SensorSettings();
+        sensorSettings.setSensor(sensor);
+
+        // Retrieve default settings based on sensor type
+        DefaultSettings defaultSettings = getDefaultSettings(sensor.getSensorType());
+
+        sensorSettings.setSensorCriticalValue(defaultSettings.getCriticalValue());
+        sensorSettings.setMeasurementFrequency(defaultSettings.getMeasurementFrequency());
+        sensorSettings.setServiceCost(defaultSettings.getServiceCost());
+
+        // Save the sensor settings
+        sensorSettingsRepository.save(sensorSettings);
     }
 }

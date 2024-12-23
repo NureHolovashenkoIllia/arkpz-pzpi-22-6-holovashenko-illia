@@ -31,6 +31,9 @@ public class Sensor {
     @Column(name = "Sensor_status", length = 20, nullable = false)
     private String sensorStatus;
 
+    @Column(name = "Last_data_received")
+    private LocalDateTime lastDataReceived;
+
     @NotNull
     @Column(name = "Date_added", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime dateAdded = LocalDateTime.now();
@@ -97,5 +100,13 @@ public class Sensor {
         if (!sensorStatus.matches("Enabled|Faulty|Disabled")) {
             throw new IllegalArgumentException("Invalid sensor status: " + sensorStatus);
         }
+    }
+
+    public LocalDateTime getLastDataReceived() {
+        return lastDataReceived;
+    }
+
+    public void setLastDataReceived(LocalDateTime lastDataReceived) {
+        this.lastDataReceived = lastDataReceived;
     }
 }

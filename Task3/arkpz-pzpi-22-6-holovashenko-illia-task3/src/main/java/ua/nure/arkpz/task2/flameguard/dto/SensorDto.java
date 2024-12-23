@@ -12,16 +12,19 @@ public class SensorDto {
 
     private String sensorStatus;
 
+    private LocalDateTime lastDataReceived;
+
     private LocalDateTime dateAdded;
 
     private Integer buildingId;
 
     public SensorDto(int sensorId, String sensorName, String sensorType, String sensorStatus,
-                     LocalDateTime dateAdded, Integer buildingId) {
+                     LocalDateTime lastDataReceived, LocalDateTime dateAdded, Integer buildingId) {
         this.sensorId = sensorId;
         this.sensorName = sensorName;
         this.sensorType = sensorType;
         this.sensorStatus = sensorStatus;
+        this.lastDataReceived = lastDataReceived;
         this.dateAdded = dateAdded;
         this.buildingId = buildingId;
     }
@@ -72,5 +75,13 @@ public class SensorDto {
 
     public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
+    }
+
+    public LocalDateTime getLastDataReceived() {
+        return lastDataReceived;
+    }
+
+    public void setLastDataReceived(LocalDateTime lastDataReceived) {
+        this.lastDataReceived = lastDataReceived;
     }
 }

@@ -5,12 +5,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.nure.arkpz.task2.flameguard.dto.AlarmDto;
+import ua.nure.arkpz.task2.flameguard.dto.DefaultSettings;
 import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
 import ua.nure.arkpz.task2.flameguard.entity.*;
-import ua.nure.arkpz.task2.flameguard.repository.MeasurementRepository;
-import ua.nure.arkpz.task2.flameguard.repository.SensorRepository;
-import ua.nure.arkpz.task2.flameguard.repository.SystemSettingsRepository;
-import ua.nure.arkpz.task2.flameguard.repository.UserAccountRepository;
+import ua.nure.arkpz.task2.flameguard.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,13 +24,13 @@ public class MeasurementService {
     private SensorRepository sensorRepository;
 
     @Autowired
-    NotificationService notificationService;
+    private NotificationService notificationService;
 
     @Autowired
-    private SystemSettingsRepository systemSettingsRepository;
+    private SensorSettingsRepository sensorSettingsRepository;
 
     @Autowired
-    AlarmService alarmService;
+    private AlarmService alarmService;
 
     // Retrieve all measurements
     public List<MeasurementDto> getAllMeasurements() {
@@ -120,20 +118,25 @@ public class MeasurementService {
     }
 
     private boolean isCriticalValue(Sensor sensor, Float value) {
-        String sensorType = sensor.getSensorType();
-        String settingKey = sensorType + "_Critical";
+        SensorSettings sensorSettings = getOrCreateSensorSettings(sensor);
+        return value >= sensorSettings.getSensorCriticalValue();
+    }
 
-        // Get critical threshold from SystemSettings
-        Optional<SystemSettings> setting = systemSettingsRepository.findBySettingKey(settingKey);
-        if (setting.isPresent()) {
-            try {
-                Float criticalValue = Float.parseFloat(setting.get().getSettingValue());
-                return value >= criticalValue;
-            } catch (NumberFormatException e) {
-                throw new RuntimeException("Invalid critical value format in settings for key: " + settingKey);
-            }
-        }
-        throw new RuntimeException("Critical value not found for sensor type: " + sensorType);
+    private SensorSettings getOrCreateSensorSettings(Sensor sensor) {
+        return sensorSettingsRepository.findBySensor(sensor)
+                .orElseGet(() -> createAndSaveDefaultSettings(sensor));
+    }
+
+    private SensorSettings createAndSaveDefaultSettings(Sensor sensor) {
+        DefaultSettings defaultSettings = DefaultSettings.getDefaultSettings(sensor.getSensorType());
+
+        SensorSettings sensorSettings = new SensorSettings();
+        sensorSettings.setSensor(sensor);
+        sensorSettings.setSensorCriticalValue(defaultSettings.getCriticalValue());
+        sensorSettings.setMeasurementFrequency(defaultSettings.getMeasurementFrequency());
+        sensorSettings.setServiceCost(defaultSettings.getServiceCost());
+
+        return sensorSettingsRepository.save(sensorSettings);
     }
 }
 
