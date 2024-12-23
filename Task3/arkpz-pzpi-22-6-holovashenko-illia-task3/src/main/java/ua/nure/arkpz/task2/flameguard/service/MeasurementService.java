@@ -1,13 +1,18 @@
 package ua.nure.arkpz.task2.flameguard.service;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.nure.arkpz.task2.flameguard.dto.AlarmDto;
 import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
-import ua.nure.arkpz.task2.flameguard.entity.Measurement;
-import ua.nure.arkpz.task2.flameguard.entity.Sensor;
+import ua.nure.arkpz.task2.flameguard.entity.*;
 import ua.nure.arkpz.task2.flameguard.repository.MeasurementRepository;
 import ua.nure.arkpz.task2.flameguard.repository.SensorRepository;
+import ua.nure.arkpz.task2.flameguard.repository.SystemSettingsRepository;
+import ua.nure.arkpz.task2.flameguard.repository.UserAccountRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +21,18 @@ public class MeasurementService {
 
     @Autowired
     private MeasurementRepository measurementRepository;
+
     @Autowired
     private SensorRepository sensorRepository;
+
+    @Autowired
+    NotificationService notificationService;
+
+    @Autowired
+    private SystemSettingsRepository systemSettingsRepository;
+
+    @Autowired
+    AlarmService alarmService;
 
     // Retrieve all measurements
     public List<MeasurementDto> getAllMeasurements() {
@@ -64,6 +79,24 @@ public class MeasurementService {
         sensor.ifPresent(measurement::setSensor);
 
         Measurement savedMeasurement = measurementRepository.save(measurement);
+
+        // Check for critical value
+        if (sensor.isPresent() && isCriticalValue(sensor.get(), measurementDto.getMeasurementValue())) {
+
+            AlarmDto alarmDto = new AlarmDto(null, "Fire alarm",
+                    LocalDateTime.now(), false,
+                    null, sensor.get().getSensorId()
+            );
+            alarmService.createAlarm(alarmDto)
+                    .ifPresent(alarm -> {
+                        try {
+                            notificationService.sendAlarmNotification(alarm.getAlarmId(), savedMeasurement);
+                        } catch (Exception e) {
+                            throw new RuntimeException("Failed to send notification for alarm: " + alarm.getAlarmId(), e);
+                        }
+                    });
+        }
+
         return Optional.of(convertToMeasurementDto(savedMeasurement));
     }
 
@@ -84,6 +117,23 @@ public class MeasurementService {
                 measurement.getDateTimeReceived(),
                 measurement.getSensor() != null ? measurement.getSensor().getSensorId() : null
         );
+    }
+
+    private boolean isCriticalValue(Sensor sensor, Float value) {
+        String sensorType = sensor.getSensorType();
+        String settingKey = sensorType + "_Critical";
+
+        // Get critical threshold from SystemSettings
+        Optional<SystemSettings> setting = systemSettingsRepository.findBySettingKey(settingKey);
+        if (setting.isPresent()) {
+            try {
+                Float criticalValue = Float.parseFloat(setting.get().getSettingValue());
+                return value >= criticalValue;
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid critical value format in settings for key: " + settingKey);
+            }
+        }
+        throw new RuntimeException("Critical value not found for sensor type: " + sensorType);
     }
 }
 

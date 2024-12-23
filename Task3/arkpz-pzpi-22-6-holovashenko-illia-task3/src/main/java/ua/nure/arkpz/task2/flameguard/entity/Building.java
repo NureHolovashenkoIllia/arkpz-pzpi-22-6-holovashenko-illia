@@ -27,7 +27,7 @@ public class Building {
     @Column(name = "Creation_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
     private LocalDate creationDate = LocalDate.now();
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "User_account_id", nullable = false)
     private UserAccount userAccount;

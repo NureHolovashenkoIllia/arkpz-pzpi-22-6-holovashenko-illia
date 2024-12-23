@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.AlarmDto;
 import ua.nure.arkpz.task2.flameguard.service.AlarmService;
+import ua.nure.arkpz.task2.flameguard.service.NotificationService;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,8 @@ public class AlarmController {
 
     @Autowired
     private AlarmService alarmService;
+    @Autowired
+    private NotificationService notificationService;
 
     /**
      * Retrieves all alarms.
@@ -219,6 +222,16 @@ public class AlarmController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/notify")
+    public ResponseEntity<String> sendNotification(@RequestParam Integer alarmId) {
+        try {
+            notificationService.sendAlarmNotification(alarmId);
+            return new ResponseEntity<>("Notification sent successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to send notification: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

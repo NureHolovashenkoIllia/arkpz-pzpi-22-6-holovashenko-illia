@@ -35,7 +35,7 @@ public class Sensor {
     @Column(name = "Date_added", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime dateAdded = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "Building_id")
     private Building building;

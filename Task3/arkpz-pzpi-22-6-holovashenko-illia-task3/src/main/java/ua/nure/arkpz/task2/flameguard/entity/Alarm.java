@@ -34,7 +34,7 @@ public class Alarm {
     private LocalDateTime timeResolved;
 
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "Sensor_id")
     private Sensor sensor;
 
