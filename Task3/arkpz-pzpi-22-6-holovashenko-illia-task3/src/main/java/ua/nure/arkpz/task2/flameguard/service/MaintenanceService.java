@@ -103,32 +103,34 @@ public class MaintenanceService {
     }
 
     public BigDecimal calculateMaintenanceCost(int buildingId) {
-        Optional<Building> building = buildingRepository.findById(buildingId);
-        if (building.isEmpty()) {
-            throw new IllegalArgumentException("Building with ID " + buildingId + " does not exist.");
-        }
+        Building building = buildingRepository.findById(buildingId)
+                .orElseThrow(() -> new IllegalArgumentException("Building with ID " + buildingId + " does not exist."));
 
-        String buildingType = building.get().getBuildingType(); // Отримання типу будівлі
-
-        // Отримання базової вартості з System_settings
-        String baseCostKey = "BaseCost_" + buildingType.replace(" ", "");
-        Optional<SystemSettings> baseCostSetting = systemSettingsRepository.findBySettingKey(baseCostKey);
-        if (baseCostSetting.isEmpty()) {
-            throw new IllegalStateException("Base cost setting not found for building type: " + buildingType);
-        }
-        BigDecimal basePrice = new BigDecimal(baseCostSetting.get().getSettingValue());
-
-        // Отримання кількості датчиків
-        List<SensorDto> sensors = sensorService.getSensorsByBuildingId(buildingId);
-
-        // Обчислення вартості обслуговування для кожного датчика
-        BigDecimal totalSensorCost = sensors.stream()
-                .map(sensor -> sensorSettingsRepository.findBySensor_SensorId(sensor.getSensorId())
-                        .map(SensorSettings::getServiceCost)
-                        .orElseThrow(() -> new IllegalStateException("Service cost not found for sensor ID: " + sensor.getSensorId())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal basePrice = getBasePriceForBuildingType(building.getBuildingType());
+        BigDecimal totalSensorCost = calculateTotalSensorCost(buildingId);
 
         return basePrice.add(totalSensorCost);
+    }
+
+    private BigDecimal getBasePriceForBuildingType(String buildingType) {
+        String baseCostKey = "BaseCost_" + buildingType.replace(" ", "");
+        return systemSettingsRepository.findBySettingKey(baseCostKey)
+                .map(setting -> new BigDecimal(setting.getSettingValue()))
+                .orElseThrow(() -> new IllegalStateException("Base cost setting not found for building type: " + buildingType));
+    }
+
+    private BigDecimal calculateTotalSensorCost(int buildingId) {
+        List<SensorDto> sensors = sensorService.getSensorsByBuildingId(buildingId);
+
+        return sensors.stream()
+                .map(sensor -> getServiceCostForSensor(sensor.getSensorId()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private BigDecimal getServiceCostForSensor(Integer sensorId) {
+        return sensorSettingsRepository.findBySensor_SensorId(sensorId)
+                .map(SensorSettings::getServiceCost)
+                .orElseThrow(() -> new IllegalStateException("Service cost not found for sensor ID: " + sensorId));
     }
 
     private MaintenanceDto convertToMaintenanceDto(Maintenance maintenance) {
