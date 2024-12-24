@@ -28,7 +28,7 @@ public class MonitoringService {
     @Autowired
     private SensorSettingsRepository sensorSettingsRepository;
 
-    @Scheduled(fixedDelayString = "#{@systemSettingsService.getMeasurementsCheckInterval()}") // Виконувати кожні 10 хвилин
+    @Scheduled(fixedDelayString = "#{@systemSettingsService.getMeasurementsCheckInterval()}")
     public void checkSensorStatus() {
         List<Sensor> sensors = sensorRepository.findAllBySensorStatus("Enabled");
 

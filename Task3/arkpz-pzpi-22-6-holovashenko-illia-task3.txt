@@ -1,0 +1,176 @@
+Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+
+до лабораторної роботи №3 з дисципліни
+"Аналіз та рефакторинг коду"
+на тему "Розробка бізнес-логіки та функцій адміністрування серверної частини програмної системи"
+
+
+
+
+Виконав:
+ст. гр. ПЗПІ-22-6
+Головашенко І. В.
+
+Перевірив:
+ст. викл. катедри ПІ
+Сокорчук І. П.
+
+
+
+
+Харків 2024
+3. Розробка бізнес-логіки та функцій адміністрування серверної частини програмної системи
+
+3.1  Мета роботи: Метою даної роботи є розроблення бізнес-логики та функцій адміністрування серверної частини програмної системи.
+
+3.2  Хід роботи:
+
+3.2.1 Розробити бізнес логіку серверної частини програмної системи.
+Бізнес-логіка серверної частини програмної системи для попередження про пожежі:
+1) Надсилання сповіщень про тривогу користувачеві на електронну пошту
+     Мета: Забезпечити автоматичне інформування користувачів про тривоги, пов’язані з пожежами, витоками газу або іншими подіями, через електронну пошту.
+     Опис: При виявленні тривоги система генерує повідомлення із зазначенням типу тривоги, часу та місця виникнення. Система використовує SMTP-сервер для надсилання електронних листів. У випадку помилки відправлення повторює спробу кілька разів.
+ 	API: POST /api/alarms/notify – надсилає повідомлення користувачу за вказаною електронною адресою.
+2) Виявлення технічних несправностей датчиків
+     Мета: Забезпечити постійний моніторинг роботи датчиків і сповіщення користувачів про їх несправності.
+     Опис: Система перевіряє регулярність передачі даних від датчиків. У разі відсутності даних понад допустимий час змінює статус датчика на "Faulty". Генерує сповіщення для користувача.
+     API: GET /api/sensors/status – перевіряє стан всіх датчиків.
+PATCH /api/sensors/{id}/status – оновлює статус датчика.
+3) Розрахунок ціни обслуговування
+     Мета: Забезпечити автоматичний розрахунок вартості технічного обслуговування будівель.
+     Опис: Вартість обслуговування залежить від кількості підключених датчиків і типу будівлі. Система використовує формулу для розрахунку: Ціна = Базова_ціна + Кількість_датчиків * Ціна_за_датчик.
+     API: POST /api/maintenances/calculate – розраховує вартість обслуговування.
+4) Оплата обслуговувань будівель
+     Мета: Надати можливість користувачам оплачувати технічне обслуговування будівель через різні платіжні методи.
+     Опис: Система підтримує оплату через кредитні картки, PayPal та готівкою. Фіксує статус оплати (Pending, Completed, Failed). Надсилає підтвердження про оплату користувачу.
+     API: POST /api/payments – створює новий платіж.
+PUT /api/payments/{id} – оновлює статус платежу.
+
+3.2.2 Розробити функції адміністрування серверної частини програмної системи.
+Система підтримує три типи адміністраторів: System Administrator, Database Administrator та Global Administrator та звичайного користувача Customer.
+
+1) System Administrator
+Задачі:
+- Управління датчиками: перегляд, додавання, редагування.
+- Налаштування системних параметрів (граничні значення для датчиків, частота перевірки).
+- Управління будівлями: перегляд, додавання, редагування.
+- Управління обслуговуваннями будівель: перегляд, додавання, редагування.
+- Управління датчиками: перегляд, додавання, редагування.
+- Моніторинг стану системи та підрахунок вартості обслуговувань.
+2) Database Administrator
+Задачі:
+- Регулярне резервне копіювання бази даних.
+- Відновлення даних у разі збою.
+- Додання налаштувань бази даних та їх редагування.
+3) Global Administrator
+Задачі:
+- Управління ролями користувачів (додавання нових адміністраторів).
+- Управління статусами та будівлями датчиків.
+- Контроль доступу до ресурсів системи.
+- Видалення користувачів, будівель, датчиків. обслуговувань.
+4) Customer
+Задачі:
+- Реєстрація та авторизація системі.
+- Перегляд власних даних про будівлі, тривоги, датчики та їх виміри.
+- Отримання тривог на пошту в разі отримання датчиками критичних вимірів.
+- Замовлення обслуговувань датчиків певної будівлі.
+- Оплата обслуговувань.
+
+3.2.3 Створити UML діаграму діяльності та UML діаграму взаємодії для серверної частини програмної системи.
+
+
+
+
+
+
+3.2.4 Створити програмну реалізацію бізнес логіки та функцій адміністрування серверної частини.
+Приклад коду реалізації бізнес логіки:
+1. @Scheduled(fixedDelayString = "#{@systemSettingsService.getMeasurementsCheckInterval()}")
+2. public void checkSensorStatus() {
+3.     List<Sensor> sensors = sensorRepository.findAllBySensorStatus("Enabled");
+4.
+5.     for (Sensor sensor : sensors) {
+6.         if (isSensorFaulty(sensor)) {
+7.             sensorService.updateSensorStatus(sensor.getSensorId(), "Faulty");
+8.
+9.             // Генерувати сповіщення для користувача
+10.            notificationService.sendSensorStatusNotification(sensor.getSensorId());
+11.        }
+12.    }
+13. }
+14.
+15. private boolean isSensorFaulty(Sensor sensor) {
+16.     Optional<SensorSettings> sensorSettingsOptional = sensorSettingsRepository.findBySensor(sensor);
+17.
+18.     if (sensorSettingsOptional.isEmpty()) {
+19.         throw new RuntimeException("Sensor settings not found for sensor ID: " + sensor.getSensorId());
+20.     }
+21.
+22.     Integer allowedInactivityMinutes = sensorSettingsOptional.get().getMeasurementFrequency();
+23.
+24.     LocalDateTime lastData = sensor.getLastDataReceived();
+25.     if (lastData == null) {
+26.         return true;
+27.     }
+28.     return lastData.isBefore(LocalDateTime.now().minusMinutes(allowedInactivityMinutes));
+29. }
+
+Приклад коду функції адміністрування:
+1. @PreAuthorize("hasAuthority('Global_Administrator')")
+2. @PatchMapping("/{id}/role")
+3. public ResponseEntity<?> updateUserAccountRole(@PathVariable Integer id, @RequestParam String role) {
+4.     try {
+5.         UserAccount updatedUser = userAccountService.updateUserRole(id, role);
+6.         String token = jwtUtil.generateToken(updatedUser.getEmail(), List.of(updatedUser.getUserRole()));
+7.
+8.         Map<String, Object> response = new HashMap<>();
+9.         response.put("updatedUser", updatedUser);
+10.        response.put("token", token);
+11.
+12.        return ResponseEntity.ok(response);
+13.    } catch (Exception e) {
+14.        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+15.                .body("{\"error\":\"" + e.getMessage() + "\"}");
+16.    }
+17. }
+
+
+
+Приклад коду налаштування функцій адміністрування:
+1. @Bean
+2. public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+3.     http.csrf(AbstractHttpConfigurer::disable)
+4.         .authorizeHttpRequests(auth -> auth
+5.             .requestMatchers("/v3/api-docs/**",
+6.                              "/swagger-ui/**",
+7.                              "/swagger-ui.html",
+8.                              "/api/auth/**",
+9.                              "/api/payments/**",
+10.                             "/api/buildings/**",
+11.                             "/api/sensors/**").permitAll()
+12.             .requestMatchers("/api/admin/system-settings/**").hasAuthority("Database_Admin")
+13.             .requestMatchers("/api/admin/sensor-settings/**").hasAuthority("System_Administrator")
+14.             .requestMatchers("/api/global/**").hasAuthority("Global_Administrator")
+15.             .requestMatchers("/api/**").authenticated()
+16.             .anyRequest().hasAuthority("Customer")
+17.         )
+18.         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+19.         .userDetailsService(userDetailsService)
+20.         .httpBasic(Customizer.withDefaults());
+21.
+22.     return http.build();
+23. }
+
+3.3  Висновок: В ході виконання лабораторної роботи я розробив бізнес-логіку та функції адміністрування серверної частини програмної системи.
+Посилання на GitHub репозиторій: https://github.com/NureHolovashenkoIllia/arkpz-pzpi-22-6-holovashenko-illia/tree/main/Task3
+Посилання на YouTube відео: https://www.youtube.com/watch?v=-NyjBydljro
+
+
