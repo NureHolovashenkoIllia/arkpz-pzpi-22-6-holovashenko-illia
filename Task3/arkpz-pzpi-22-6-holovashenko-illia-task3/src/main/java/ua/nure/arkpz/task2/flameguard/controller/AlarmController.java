@@ -218,7 +218,7 @@ public class AlarmController {
             @ApiResponse(responseCode = "404", description = "Alarm not found",
                     content = @Content(mediaType = "application/json"))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAlarm(@PathVariable int id) {
         try {

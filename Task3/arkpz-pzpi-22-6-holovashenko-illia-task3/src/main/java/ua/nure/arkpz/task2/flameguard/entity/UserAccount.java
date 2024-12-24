@@ -103,7 +103,7 @@ public class UserAccount {
 
     @PrePersist
     public void validateUserRole() {
-        if (!userRole.matches("Customer|System_Administrator|Database_Administrator|Global_Administrator")) {
+        if (!userRole.matches("Customer|System_Administrator|Database_Admin|Global_Administrator")) {
             throw new IllegalArgumentException("Invalid user role: " + userRole);
         }
     }

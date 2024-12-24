@@ -174,7 +174,7 @@ public class BuildingController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No building found with id - {id}\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBuilding(@PathVariable Integer id) {
         try {

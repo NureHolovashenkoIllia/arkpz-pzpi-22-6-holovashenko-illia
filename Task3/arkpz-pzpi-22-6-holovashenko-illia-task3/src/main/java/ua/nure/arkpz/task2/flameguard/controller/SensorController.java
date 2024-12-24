@@ -171,7 +171,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No sensor found with specified id\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSensor(@PathVariable int id) {
         try {
@@ -199,7 +199,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No sensor found with specified id\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @PatchMapping("/{id}/building")
     public ResponseEntity<?> updateSensorBuilding(@PathVariable int id,
                                                   @RequestParam(required = false) Integer buildingId) {
@@ -228,7 +228,7 @@ public class SensorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No sensor found with specified id\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> updateSensorStatus(@PathVariable int id,
                                                 @RequestParam String status) {

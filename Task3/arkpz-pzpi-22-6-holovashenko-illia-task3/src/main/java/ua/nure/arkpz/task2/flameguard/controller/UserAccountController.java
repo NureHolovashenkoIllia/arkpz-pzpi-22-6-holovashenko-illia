@@ -13,8 +13,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.entity.UserAccount;
 import ua.nure.arkpz.task2.flameguard.service.UserAccountService;
+import ua.nure.arkpz.task2.flameguard.util.JWTUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST controller for managing users.
@@ -27,6 +30,9 @@ public class UserAccountController {
 
     @Autowired
     public UserAccountService userAccountService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @Autowired
     public UserAccountController(UserAccountService userAccountService) {
@@ -117,7 +123,7 @@ public class UserAccountController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No user account found with specified id\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserAccount(@PathVariable Integer id) {
         try {
@@ -145,12 +151,18 @@ public class UserAccountController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No user account found with specified id\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @PatchMapping("/{id}/role")
     public ResponseEntity<?> updateUserAccountRole(@PathVariable Integer id, @RequestParam String role) {
         try {
             UserAccount updatedUser = userAccountService.updateUserRole(id, role);
-            return ResponseEntity.ok(updatedUser);
+            String token = jwtUtil.generateToken(updatedUser.getEmail(), List.of(updatedUser.getUserRole()));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("updatedUser", updatedUser);
+            response.put("token", token);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("{\"error\":\"" + e.getMessage() + "\"}");
@@ -177,7 +189,13 @@ public class UserAccountController {
     public ResponseEntity<?> setDefaultUserAccountRole(@PathVariable Integer id) {
         try {
             UserAccount updatedUser = userAccountService.setDefaultUserRole(id);
-            return ResponseEntity.ok(updatedUser);
+            String token = jwtUtil.generateToken(updatedUser.getEmail(), List.of(updatedUser.getUserRole()));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("updatedUser", updatedUser);
+            response.put("token", token);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("{\"error\":\"" + e.getMessage() + "\"}");

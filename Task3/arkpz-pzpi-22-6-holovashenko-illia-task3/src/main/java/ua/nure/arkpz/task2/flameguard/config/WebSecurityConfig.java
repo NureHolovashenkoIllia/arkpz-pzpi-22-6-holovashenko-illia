@@ -40,12 +40,13 @@ public class WebSecurityConfig {
                                  "/api/payments/**",
                                  "/api/buildings/**",
                                  "/api/sensors/**").permitAll()
-                                .requestMatchers("/api/admin/**").hasAuthority("System_Administrator")
-                                .requestMatchers("/api/database/**").hasAuthority("Database_Administrator")
+                                .requestMatchers("/api/admin/system-settings/**").hasAuthority("Database_Admin")
+                                .requestMatchers("/api/admin/sensor-settings/**").hasAuthority("System_Administrator")
                                 .requestMatchers("/api/global/**").hasAuthority("Global_Administrator")
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().hasAuthority("Customer")
                 )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
                 .httpBasic(Customizer.withDefaults());
 

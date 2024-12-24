@@ -174,7 +174,7 @@ public class MaintenanceController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No maintenance found with specified id\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMaintenance(@PathVariable int id) {
         try {
@@ -186,7 +186,7 @@ public class MaintenanceController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('System_Administrator')")
+    @PreAuthorize("hasAuthority('System_Administrator')")
     @PostMapping("/calculate")
     public ResponseEntity<?> calculateMaintenanceCost(@RequestParam int buildingId) {
         try {

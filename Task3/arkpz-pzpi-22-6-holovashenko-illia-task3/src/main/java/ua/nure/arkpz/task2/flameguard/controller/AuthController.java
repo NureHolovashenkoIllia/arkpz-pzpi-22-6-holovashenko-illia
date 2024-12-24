@@ -14,6 +14,8 @@ import ua.nure.arkpz.task2.flameguard.entity.UserAccount;
 import ua.nure.arkpz.task2.flameguard.service.UserAccountService;
 import ua.nure.arkpz.task2.flameguard.util.JWTUtil;
 
+import java.util.List;
+
 /**
  * REST controller for authorisation management.
  * Provides endpoints for user authentication and registration.
@@ -48,7 +50,7 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody UserAccount userAccount) {
         try {
             UserAccount user = userAccountService.registerUserAccount(userAccount);
-            String token = jwtUtil.generateToken(user.getEmail());
+            String token = jwtUtil.generateToken(user.getEmail(), List.of(user.getUserRole()));
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("{ \"token\":\"" + token + "\"}");
         } catch (Exception e) {
@@ -77,7 +79,7 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
         try {
             UserAccount user = userAccountService.loginUser(email, password);
-            String token = jwtUtil.generateToken(user.getEmail());
+            String token = jwtUtil.generateToken(user.getEmail(), List.of(user.getUserRole()));
             return ResponseEntity.ok("{ \"token\":\"" + token + "\"}");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

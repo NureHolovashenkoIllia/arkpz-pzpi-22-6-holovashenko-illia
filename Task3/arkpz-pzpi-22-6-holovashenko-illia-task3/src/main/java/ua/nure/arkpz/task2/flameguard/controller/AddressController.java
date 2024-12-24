@@ -143,7 +143,7 @@ public class AddressController {
             @ApiResponse(responseCode = "404", description = "Address not found",
                     content = @Content(mediaType = "application/json"))
     })
-    @PreAuthorize("hasAnyAuthority('System_Administrator')")
+    @PreAuthorize("hasAuthority('System_Administrator')")
     @PatchMapping("/{id}/building")
     public ResponseEntity<?> updateAddressBuilding(@PathVariable int id,
                                                    @RequestParam int buildingId) {
@@ -169,7 +169,7 @@ public class AddressController {
             @ApiResponse(responseCode = "404", description = "Address not found",
                     content = @Content(mediaType = "application/json"))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAddress(@PathVariable int id) {
         try {

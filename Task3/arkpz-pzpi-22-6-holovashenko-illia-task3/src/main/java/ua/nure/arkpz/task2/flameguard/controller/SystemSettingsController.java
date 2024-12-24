@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.AddressDto;
+import ua.nure.arkpz.task2.flameguard.entity.BackupData;
 import ua.nure.arkpz.task2.flameguard.entity.SystemSettings;
 import ua.nure.arkpz.task2.flameguard.service.SystemSettingsService;
 
@@ -42,11 +43,41 @@ public class SystemSettingsController {
             @ApiResponse(responseCode = "403", description = "Access is denied.",
                     content = @Content(schema = @Schema(type = "string", example = "{\"error\":\"Access Denied\"}")))
     })
-    @PreAuthorize("hasAuthority('System_Administrator')")
+    @PreAuthorize("hasAuthority('Database_Admin')")
     @GetMapping
     public ResponseEntity<List<SystemSettings>> getAllSettings() {
         List<SystemSettings> settings = systemSettingsService.getAllSettings();
         return ResponseEntity.ok(settings);
+    }
+
+    /**
+     * Creates a new system setting or updates an existing one.
+     *
+     * @param settingKey   the key of the setting to create or update.
+     * @param settingValue the value of the setting to create or update.
+     * @return the created or updated setting.
+     */
+    @Operation(summary = "Create or update a system setting", description = "Creates a new system setting or updates an existing one by key.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Setting created or updated successfully.",
+                    content = @Content(schema = @Schema(implementation = SystemSettings.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input or request.",
+                    content = @Content(schema = @Schema(type = "string", example = "{\"error\":\"Invalid input\"}"))),
+            @ApiResponse(responseCode = "403", description = "Access is denied.",
+                    content = @Content(schema = @Schema(type = "string", example = "{\"error\":\"Access Denied\"}")))
+    })
+    @PreAuthorize("hasAuthority('Database_Admin')")
+    @PostMapping
+    public ResponseEntity<?> createSetting(@RequestParam String settingKey,
+                                           @RequestParam String settingValue) {
+        try {
+            SystemSettings savedSetting = systemSettingsService.saveOrUpdateSetting(settingKey, settingValue);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(savedSetting);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
     }
 
     /**
@@ -65,7 +96,7 @@ public class SystemSettingsController {
             @ApiResponse(responseCode = "403", description = "Access is denied.",
                     content = @Content(schema = @Schema(type = "string", example = "{\"error\":\"Access Denied\"}")))
     })
-    @PreAuthorize("hasAuthority('System_Administrator')")
+    @PreAuthorize("hasAuthority('Database_Admin')")
     @PatchMapping("/{key}")
     public ResponseEntity<?> updateSettingValue(@PathVariable String key, @RequestParam String value) {
         try {
@@ -76,5 +107,45 @@ public class SystemSettingsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("{\"error\":\"" + e.getMessage() + "\"}");
         }
+    }
+
+    /**
+     * Creates a backup of the system settings.
+     *
+     * @param backupData the backup data containing the path for saving the backup.
+     * @return a success message upon completion.
+     */
+    @Operation(summary = "Create a database backup", description = "Generates a backup of the system settings.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Backup created successfully.",
+                    content = @Content(schema = @Schema(type = "string", example = "Backup created successfully"))),
+            @ApiResponse(responseCode = "403", description = "Access is denied.",
+                    content = @Content(schema = @Schema(type = "string", example = "{\"error\":\"Access Denied\"}")))
+    })
+    @PreAuthorize("hasAuthority('Database_Admin')")
+    @GetMapping("/backup")
+    public ResponseEntity<String> createBackup(@RequestBody BackupData backupData) {
+        systemSettingsService.createDatabaseBackup(backupData.getBackupPath());
+        return ResponseEntity.ok("Backup created successfully");
+    }
+
+    /**
+     * Restores system settings from a backup file.
+     *
+     * @param backupData the backup data containing the path to the backup file.
+     * @return a success message upon completion.
+     */
+    @Operation(summary = "Restore system settings from a backup", description = "Restores the system settings database from a specified backup file.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Settings restored successfully.",
+                    content = @Content(schema = @Schema(type = "string", example = "Settings restored successfully"))),
+            @ApiResponse(responseCode = "403", description = "Access is denied.",
+                    content = @Content(schema = @Schema(type = "string", example = "{\"error\":\"Access Denied\"}")))
+    })
+    @PreAuthorize("hasAuthority('Database_Admin')")
+    @PostMapping("/restore")
+    public ResponseEntity<String> restoreSettings(@RequestBody BackupData backupData) {
+        systemSettingsService.restoreDatabase(backupData.getBackupPath());
+        return ResponseEntity.ok("Settings restored successfully");
     }
 }

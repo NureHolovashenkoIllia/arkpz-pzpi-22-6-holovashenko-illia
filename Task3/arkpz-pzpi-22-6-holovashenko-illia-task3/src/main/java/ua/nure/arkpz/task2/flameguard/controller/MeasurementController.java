@@ -169,7 +169,7 @@ public class MeasurementController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(example = "{\"error\":\"No measurement found with specified id\"}")))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMeasurement(@PathVariable int id) {
         try {

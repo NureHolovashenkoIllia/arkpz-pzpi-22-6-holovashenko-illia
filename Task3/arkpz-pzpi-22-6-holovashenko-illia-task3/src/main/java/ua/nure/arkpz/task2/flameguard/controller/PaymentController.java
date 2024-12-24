@@ -142,7 +142,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "404", description = "Payment not found with the specified ID",
                     content = @Content(mediaType = "application/json"))
     })
-    @PreAuthorize("hasAnyAuthority('Global_Administrator')")
+    @PreAuthorize("hasAuthority('Global_Administrator')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePayment(@PathVariable int id) {
         try {
