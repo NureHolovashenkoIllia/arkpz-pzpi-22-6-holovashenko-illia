@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
 import ua.nure.arkpz.task2.flameguard.service.BuildingService;
 import ua.nure.arkpz.task2.flameguard.service.MeasurementService;
+import ua.nure.arkpz.task2.flameguard.service.SensorService;
 
 @Component
 public class MqttListener {
@@ -21,11 +22,13 @@ public class MqttListener {
     private final MeasurementService measurementService;
     private final ObjectMapper objectMapper;
     private final BuildingService buildingService;
+    private final SensorService sensorService;
 
-    public MqttListener(MeasurementService measurementService, ObjectMapper objectMapper, BuildingService buildingService) {
+    public MqttListener(MeasurementService measurementService, ObjectMapper objectMapper, BuildingService buildingService, SensorService sensorService) {
         this.measurementService = measurementService;
         this.objectMapper = objectMapper;
         this.buildingService = buildingService;
+        this.sensorService = sensorService;
     }
 
     @PostConstruct
@@ -36,7 +39,7 @@ public class MqttListener {
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);
             options.setConnectionTimeout(30);
-            options.setKeepAliveInterval(60);
+            options.setKeepAliveInterval(100);
 
             System.out.println("Connecting to MQTT broker...");
             client.connect(options);
@@ -56,6 +59,7 @@ public class MqttListener {
                     if (payload.contains("sensorId") && payload.contains("measurementValue")) {
                         MeasurementDto measurementDto = objectMapper.readValue(payload, MeasurementDto.class);
                         measurementService.createMeasurement(measurementDto);
+                        sensorService.updateLastDataReceived(measurementDto.getSensorId(), measurementDto.getDateTimeReceived());
                     } else if (payload.contains("buildingId") && payload.contains("buildingCondition")) {
                         Integer buildingId = jsonNode.get("buildingId").asInt();
                         String buildingCondition = jsonNode.get("buildingCondition").asText();

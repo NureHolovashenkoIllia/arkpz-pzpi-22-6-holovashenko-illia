@@ -10,6 +10,7 @@ set(SOURCES
         src/utils.cpp
         src/sensors.cpp
         src/mqtt_client.cpp
+        src/buildings.cpp
 )
 
 include_directories("C:/mqtt/paho-cpp/include")

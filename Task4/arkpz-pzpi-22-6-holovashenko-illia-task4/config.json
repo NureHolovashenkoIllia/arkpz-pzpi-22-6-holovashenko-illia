@@ -8,11 +8,34 @@
   "sensor_api": {
     "url": "http://localhost:8080/api/sensors/enabled"
   },
+  "building_api": {
+    "url": "http://localhost:8080/api/buildings"
+  },
   "sensor_limits": {
     "Temperature": {"min": 20, "max": 80},
     "Humidity": {"min": 10, "max": 90},
     "Gas": {"min": 400, "max": 2000},
     "Smoke": {"min": 0, "max": 10}
+  },
+  "sensor_weights": {
+    "Private": {
+      "Temperature": 0.3,
+      "Gas": 0.4,
+      "Smoke": 0.2,
+      "Humidity": 0.1
+    },
+    "Office": {
+      "Temperature": 0.4,
+      "Gas": 0.2,
+      "Smoke": 0.3,
+      "Humidity": 0.1
+    },
+    "StateInstitution": {
+      "Temperature": 0.25,
+      "Gas": 0.35,
+      "Smoke": 0.25,
+      "Humidity": 0.15
+    }
   },
   "publish_interval": 100
 }

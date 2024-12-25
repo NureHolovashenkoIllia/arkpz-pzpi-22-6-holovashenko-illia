@@ -19,9 +19,10 @@ Config loadConfig(const std::string& filename) {
     config.mqtt_topic = configJson["mqtt_broker"]["topic"];
     config.mqtt_qos = configJson["mqtt_broker"]["qos"];
     config.sensor_api_url = configJson["sensor_api"]["url"];
+    config.building_api_url = configJson["building_api"]["url"];
     config.publish_interval = configJson["publish_interval"];
 
-    // Завантажуємо межі для сенсорів
+    // Load sensor limits
     config.temperature_limits.min = configJson["sensor_limits"]["Temperature"]["min"];
     config.temperature_limits.max = configJson["sensor_limits"]["Temperature"]["max"];
     config.humidity_limits.min = configJson["sensor_limits"]["Humidity"]["min"];
@@ -30,6 +31,13 @@ Config loadConfig(const std::string& filename) {
     config.gas_limits.max = configJson["sensor_limits"]["Gas"]["max"];
     config.smoke_limits.min = configJson["sensor_limits"]["Smoke"]["min"];
     config.smoke_limits.max = configJson["sensor_limits"]["Smoke"]["max"];
+
+    // Load sensor weights
+    for (const auto& [buildingType, weights] : configJson["sensor_weights"].items()) {
+        for (const auto& [sensorType, weight] : weights.items()) {
+            config.sensor_weights[buildingType][sensorType] = weight.get<double>();
+        }
+    }
 
     return config;
 }

@@ -12,6 +12,7 @@ import ua.nure.arkpz.task2.flameguard.repository.SensorRepository;
 import ua.nure.arkpz.task2.flameguard.repository.SensorSettingsRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,6 +149,17 @@ public class SensorService {
                     Sensor savedSensor = sensorRepository.save(sensor);
                     return convertToSensorDto(savedSensor);
         });
+    }
+
+    // Update the last_data_received field
+    public Optional<SensorDto> updateLastDataReceived(int id, LocalDateTime lastDataReceived) {
+        return sensorRepository.findById(id)
+                .map(sensor -> {
+                    sensor.setLastDataReceived(lastDataReceived);
+
+                    Sensor updatedSensor = sensorRepository.save(sensor);
+                    return convertToSensorDto(updatedSensor);
+                });
     }
 
     // Validate sensor fields

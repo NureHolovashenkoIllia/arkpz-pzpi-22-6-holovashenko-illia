@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #include <string>
+#include <unordered_map>
 
 struct SensorLimits {
     int min;
@@ -14,10 +15,12 @@ struct Config {
     std::string mqtt_topic;
     int mqtt_qos;
     std::string sensor_api_url;
+    std::string building_api_url;
     SensorLimits temperature_limits;
     SensorLimits humidity_limits;
     SensorLimits gas_limits;
     SensorLimits smoke_limits;
+    std::unordered_map<std::string, std::unordered_map<std::string, double>> sensor_weights;
     int publish_interval;
 };
 
