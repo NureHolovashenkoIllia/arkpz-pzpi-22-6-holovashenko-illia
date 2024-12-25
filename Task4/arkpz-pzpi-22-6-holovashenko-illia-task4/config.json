@@ -5,11 +5,14 @@
     "topic": "fire_safety/data",
     "qos": 1
   },
-  "publish_interval": 10,
+  "sensor_api": {
+    "url": "http://localhost:8080/api/sensors/enabled"
+  },
   "sensor_limits": {
-    "Temperature": {"min": 20, "max": 50},
+    "Temperature": {"min": 20, "max": 80},
     "Humidity": {"min": 10, "max": 90},
-    "Gas": {"min": 0, "max": 100},
+    "Gas": {"min": 400, "max": 2000},
     "Smoke": {"min": 0, "max": 10}
-  }
+  },
+  "publish_interval": 100
 }
