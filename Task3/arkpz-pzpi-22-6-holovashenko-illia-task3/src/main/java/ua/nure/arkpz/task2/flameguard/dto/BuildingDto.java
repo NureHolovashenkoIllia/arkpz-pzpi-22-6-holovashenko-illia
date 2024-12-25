@@ -12,16 +12,19 @@ public class BuildingDto {
 
     private String buildingType;
 
+    private String buildingCondition;
+
     private LocalDate creationDate;
 
     private Integer userAccountId;
 
     public BuildingDto(Integer buildingId, String buildingName, String buildingDescription,
-                       String buildingType, LocalDate creationDate, Integer userAccountId) {
+                       String buildingType, String buildingCondition, LocalDate creationDate, Integer userAccountId) {
         this.buildingId = buildingId;
         this.buildingName = buildingName;
         this.buildingDescription = buildingDescription;
         this.buildingType = buildingType;
+        this.buildingCondition = buildingCondition;
         this.creationDate = creationDate;
         this.userAccountId = userAccountId;
     }
@@ -72,5 +75,13 @@ public class BuildingDto {
 
     public void setBuildingType(String buildingType) {
         this.buildingType = buildingType;
+    }
+
+    public String getBuildingCondition() {
+        return buildingCondition;
+    }
+
+    public void setBuildingCondition(String buildingCondition) {
+        this.buildingCondition = buildingCondition;
     }
 }

@@ -1,11 +1,14 @@
 package ua.nure.arkpz.task2.flameguard.mqtt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.PostConstruct;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.stereotype.Component;
+import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
+import ua.nure.arkpz.task2.flameguard.service.BuildingService;
 import ua.nure.arkpz.task2.flameguard.service.MeasurementService;
 
 @Component
@@ -17,10 +20,12 @@ public class MqttListener {
 
     private final MeasurementService measurementService;
     private final ObjectMapper objectMapper;
+    private final BuildingService buildingService;
 
-    public MqttListener(MeasurementService measurementService, ObjectMapper objectMapper) {
+    public MqttListener(MeasurementService measurementService, ObjectMapper objectMapper, BuildingService buildingService) {
         this.measurementService = measurementService;
         this.objectMapper = objectMapper;
+        this.buildingService = buildingService;
     }
 
     @PostConstruct
@@ -40,6 +45,27 @@ public class MqttListener {
             client.subscribe(TOPIC, (topic, message) -> {
                 String payload = new String(message.getPayload());
                 System.out.println("Message received: " + payload);
+
+                try {
+                    if (!payload.trim().startsWith("{") || !payload.trim().endsWith("}")) {
+                        throw new IllegalArgumentException("The message is not in JSON format");
+                    }
+
+                    JsonNode jsonNode = objectMapper.readTree(payload);
+
+                    if (payload.contains("sensorId") && payload.contains("measurementValue")) {
+                        MeasurementDto measurementDto = objectMapper.readValue(payload, MeasurementDto.class);
+                        measurementService.createMeasurement(measurementDto);
+                    } else if (payload.contains("buildingId") && payload.contains("buildingCondition")) {
+                        Integer buildingId = jsonNode.get("buildingId").asInt();
+                        String buildingCondition = jsonNode.get("buildingCondition").asText();
+                        buildingService.updateBuildingCondition(buildingId, buildingCondition);
+                    } else {
+                        System.err.println("Unknown message format.");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Message processing error: " + e.getMessage());
+                }
             });
 
             System.out.println("Subscribe to the topic: " + TOPIC);

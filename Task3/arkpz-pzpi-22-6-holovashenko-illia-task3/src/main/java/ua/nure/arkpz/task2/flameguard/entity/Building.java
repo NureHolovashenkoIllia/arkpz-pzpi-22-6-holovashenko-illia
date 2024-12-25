@@ -30,6 +30,11 @@ public class Building {
     @Column(name = "Building_type", length = 50)
     private String buildingType;
 
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "Building_condition", length = 50)
+    private String buildingCondition;
+
     @Column(name = "Creation_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
     private LocalDate creationDate = LocalDate.now();
 
@@ -85,5 +90,20 @@ public class Building {
 
     public void setBuildingType(@Size(max = 50) @NotNull String buildingType) {
         this.buildingType = buildingType;
+    }
+
+    public String getBuildingCondition() {
+        return buildingCondition;
+    }
+
+    public void setBuildingCondition(String buildingCondition) {
+        this.buildingCondition = buildingCondition;
+    }
+
+    @PrePersist
+    public void validateUserRole() {
+        if (!buildingCondition.matches("Excellent|Good|Fair|Poor|Dangerous")) {
+            throw new IllegalArgumentException("Invalid building condition: " + buildingCondition);
+        }
     }
 }

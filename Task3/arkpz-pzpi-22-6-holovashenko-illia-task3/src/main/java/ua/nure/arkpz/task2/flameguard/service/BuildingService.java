@@ -3,6 +3,7 @@ package ua.nure.arkpz.task2.flameguard.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.nure.arkpz.task2.flameguard.dto.BuildingDto;
+import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
 import ua.nure.arkpz.task2.flameguard.entity.Building;
 import ua.nure.arkpz.task2.flameguard.entity.UserAccount;
 import ua.nure.arkpz.task2.flameguard.repository.BuildingRepository;
@@ -38,6 +39,8 @@ public class BuildingService {
     }
 
     public Optional<BuildingDto> createBuilding(BuildingDto buildingDto) {
+        validateBuildingDto(buildingDto);
+
         Optional<UserAccount> userAccount = buildingDto.getUserAccountId() != null
                 ? userAccountRepository.findById(buildingDto.getUserAccountId())
                 : Optional.empty();
@@ -46,6 +49,7 @@ public class BuildingService {
         building.setBuildingName(buildingDto.getBuildingName());
         building.setBuildingDescription(buildingDto.getBuildingDescription());
         building.setBuildingType(buildingDto.getBuildingType());
+        building.setBuildingCondition(buildingDto.getBuildingCondition());
         building.setCreationDate(buildingDto.getCreationDate());
         userAccount.ifPresent(building::setUserAccount);
 
@@ -59,6 +63,7 @@ public class BuildingService {
                     building.setBuildingName(updatedBuilding.getBuildingName());
                     building.setBuildingDescription(updatedBuilding.getBuildingDescription());
                     building.setBuildingType(updatedBuilding.getBuildingType());
+                    building.setBuildingCondition(updatedBuilding.getBuildingCondition());
                     building.setCreationDate(updatedBuilding.getCreationDate());
 
                     if (updatedBuilding.getUserAccountId() != null) {
@@ -69,8 +74,22 @@ public class BuildingService {
                         building.setUserAccount(null);
                     }
 
+                    validateBuildingDto(convertToBuildingDto(building));
+
                     Building savedBuilding = buildingRepository.save(building);
                     return convertToBuildingDto(savedBuilding);
+                });
+    }
+
+    public Optional<BuildingDto> updateBuildingCondition(Integer id, String updatedCondition) {
+        return buildingRepository.findById(id)
+                .map(building -> {
+                    building.setBuildingCondition(updatedCondition);
+
+                    validateBuildingDto(convertToBuildingDto(building));
+
+                    Building updatedBuilding = buildingRepository.save(building);
+                    return convertToBuildingDto(updatedBuilding);
                 });
     }
 
@@ -82,12 +101,20 @@ public class BuildingService {
         return false;
     }
 
+    // Validate building fields
+    private void validateBuildingDto(BuildingDto buildingDto) {
+        if (!buildingDto.getBuildingCondition().matches("Excellent|Good|Fair|Poor|Dangerous")) {
+            throw new IllegalArgumentException("Invalid building condition: " + buildingDto.getBuildingCondition());
+        }
+    }
+
     private BuildingDto convertToBuildingDto(Building building) {
         return new BuildingDto(
                 building.getBuildingId(),
                 building.getBuildingName(),
                 building.getBuildingDescription(),
                 building.getBuildingType(),
+                building.getBuildingCondition(),
                 building.getCreationDate(),
                 building.getUserAccount() != null ? building.getUserAccount().getUserAccountId() : null
         );

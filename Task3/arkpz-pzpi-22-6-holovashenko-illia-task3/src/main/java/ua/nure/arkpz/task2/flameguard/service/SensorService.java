@@ -50,6 +50,13 @@ public class SensorService {
                 .toList();
     }
 
+    public List<SensorDto> getEnabledSensors() {
+        return sensorRepository.findAllBySensorStatus("Enabled")
+                .stream()
+                .map(this::convertToSensorDto)
+                .toList();
+    }
+
     // Create a new sensor
     public Optional<SensorDto> createSensor(SensorDto sensorDto) {
         validateSensorDto(sensorDto);

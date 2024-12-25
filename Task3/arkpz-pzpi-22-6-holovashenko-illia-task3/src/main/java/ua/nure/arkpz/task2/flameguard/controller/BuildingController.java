@@ -162,6 +162,34 @@ public class BuildingController {
     }
 
     /**
+     * Updates the condition of an existing building.
+     *
+     * @param id          The ID of the building to update.
+     * @param newCondition The new condition for the building.
+     * @return The updated building or an error message if not found.
+     */
+    @Operation(summary = "Update building condition", description = "Updates the condition of a building by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Building condition updated successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BuildingDto.class))),
+            @ApiResponse(responseCode = "404", description = "Building not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"error\":\"No building found with id - {id}\"}")))
+    })
+    @PatchMapping("/condition")
+    public ResponseEntity<?> updateBuildingCondition(@RequestParam Integer id,
+                                                     @RequestParam String newCondition) {
+        try {
+            Optional<BuildingDto> updatedBuilding = buildingService.updateBuildingCondition(id, newCondition);
+            return ResponseEntity.ok(updatedBuilding);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    /**
      * Deletes a building.
      *
      * @param id The ID of the building to be deleted.

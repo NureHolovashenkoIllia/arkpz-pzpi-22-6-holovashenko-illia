@@ -1,6 +1,7 @@
 package ua.nure.arkpz.task2.flameguard.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ua.nure.arkpz.task2.flameguard.dto.DefaultSettings;
@@ -28,8 +29,15 @@ public class MonitoringService {
     @Autowired
     private SensorSettingsRepository sensorSettingsRepository;
 
+    @Value("${monitoring.task.enabled:true}")
+    private boolean isTaskEnabled;
+
     @Scheduled(fixedDelayString = "#{@systemSettingsService.getMeasurementsCheckInterval()}")
     public void checkSensorStatus() {
+        if (!isTaskEnabled) {
+            return;
+        }
+
         List<Sensor> sensors = sensorRepository.findAllBySensorStatus("Enabled");
 
         for (Sensor sensor : sensors) {

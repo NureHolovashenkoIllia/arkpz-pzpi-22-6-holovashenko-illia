@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.arkpz.task2.flameguard.dto.SensorDto;
+import ua.nure.arkpz.task2.flameguard.service.NotificationService;
 import ua.nure.arkpz.task2.flameguard.service.SensorService;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class SensorController {
     @Autowired
     private SensorService sensorService;
 
+    @Autowired
+    private NotificationService notificationService;
     /**
      * Retrieve all sensors.
      *
@@ -72,6 +75,23 @@ public class SensorController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("{\"error\":\"No sensor found with id - " + id + "\"}");
+    }
+
+    /**
+     * Retrieve all sensors with status "Enabled".
+     *
+     * @return List of SensorDto objects with status "Enabled".
+     */
+    @Operation(summary = "Get all enabled sensors", description = "Retrieve a list of all sensors with status 'Enabled'.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved enabled sensors.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SensorDto.class)))
+    })
+    @GetMapping("/enabled")
+    public ResponseEntity<List<SensorDto>> getEnabledSensors() {
+        List<SensorDto> sensors = sensorService.getEnabledSensors();
+        return ResponseEntity.ok(sensors);
     }
 
     /**
@@ -238,6 +258,16 @@ public class SensorController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/notify")
+    public ResponseEntity<String> sendWarningSensorStatusNotification(@RequestParam Integer sensorId) {
+        try {
+            notificationService.sendSensorStatusNotification(sensorId);
+            return new ResponseEntity<>("Notification sent successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to send notification: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
