@@ -1,0 +1,15 @@
+{
+  "mqtt_broker": {
+    "address": "tcp://localhost:1883",
+    "client_id": "FireSafetyPublisherClient",
+    "topic": "fire_safety/data",
+    "qos": 1
+  },
+  "publish_interval": 10,
+  "sensor_limits": {
+    "Temperature": {"min": 20, "max": 50},
+    "Humidity": {"min": 10, "max": 90},
+    "Gas": {"min": 0, "max": 100},
+    "Smoke": {"min": 0, "max": 10}
+  }
+}
