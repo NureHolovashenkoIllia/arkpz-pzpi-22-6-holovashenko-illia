@@ -1,4 +1,4 @@
-#include "sensors.h"
+#include "..//include//sensors.h"
 #include "utils.h"
 #include <config.h>
 #include <nlohmann/json.hpp>

@@ -39,7 +39,7 @@ public class MqttListener {
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);
             options.setConnectionTimeout(30);
-            options.setKeepAliveInterval(100);
+            options.setKeepAliveInterval(60);
 
             System.out.println("Connecting to MQTT broker...");
             client.connect(options);

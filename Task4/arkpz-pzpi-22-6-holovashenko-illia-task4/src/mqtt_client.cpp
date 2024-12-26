@@ -1,5 +1,5 @@
 #include "mqtt_client.h"
-#include "sensors.h"
+#include "..//include//sensors.h"
 #include "buildings.h"
 #include "utils.h"
 #include <nlohmann/json.hpp>
@@ -83,6 +83,7 @@ void publishSensorData(mqtt::async_client& client, const Config& config) {
         fetchAndProcessSensors(client, config, sensorValues);
         processBuildings(client, config, sensorValues);
 
+        std::cout << std::endl << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(config.publish_interval));
     }
 }
