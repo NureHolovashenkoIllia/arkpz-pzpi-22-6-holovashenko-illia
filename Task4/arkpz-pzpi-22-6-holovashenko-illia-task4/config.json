@@ -1,15 +1,15 @@
 {
   "mqtt_broker": {
-    "address": "tcp://localhost:1883",
+    "address": "tcp://broker.hivemq.com:1883",
     "client_id": "FireSafetyPublisherClient",
     "topic": "fire_safety/data",
     "qos": 1
   },
   "sensor_api": {
-    "url": "http://localhost:8080/api/sensors/enabled"
+    "url": "https://eastern-academy-445910-g3.lm.r.appspot.com/api/sensors/enabled"
   },
   "building_api": {
-    "url": "http://localhost:8080/api/buildings"
+    "url": "https://eastern-academy-445910-g3.lm.r.appspot.com/api/buildings"
   },
   "sensor_limits": {
     "Temperature": {"min": 20, "max": 80},

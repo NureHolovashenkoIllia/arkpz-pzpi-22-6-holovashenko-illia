@@ -101,8 +101,8 @@ public class SystemSettingsService {
     }
 
     public String getMeasurementsCheckInterval() {
-        SystemSettings setting = systemSettingsRepository.findById("Measurements_Check_Interval")
-                .orElseThrow(() -> new RuntimeException("Measurements Check Interval setting not found in SystemSettings"));
-        return setting.getSettingValue();
+        return systemSettingsRepository.findById("Measurements_Check_Interval")
+                .map(SystemSettings::getSettingValue)
+                .orElse("300000"); // Значення за замовчуванням: "1800000" мілісекунд (30 хвилин)
     }
 }

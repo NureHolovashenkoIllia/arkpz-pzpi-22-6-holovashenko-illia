@@ -36,10 +36,13 @@ public class WebSecurityConfig {
                 .requestMatchers("/v3/api-docs/**",
                                  "/swagger-ui/**",
                                  "/swagger-ui.html",
-                                 "/api/auth/**",
+                                 "/actuator/**",
+                                 "/api/auth/register",
+                                 "/api/auth/login",
+                                 "/api/sensors/**",
                                  "/api/payments/**",
                                  "/api/buildings/**",
-                                 "/api/sensors/**").permitAll()
+                                 "/api/measurements").permitAll()
                                 .requestMatchers("/api/admin/system-settings/**").hasAuthority("Database_Admin")
                                 .requestMatchers("/api/admin/sensor-settings/**").hasAuthority("System_Administrator")
                                 .requestMatchers("/api/global/**").hasAuthority("Global_Administrator")

@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.stereotype.Component;
 import ua.nure.arkpz.task2.flameguard.dto.MeasurementDto;
 import ua.nure.arkpz.task2.flameguard.service.BuildingService;
@@ -15,7 +16,7 @@ import ua.nure.arkpz.task2.flameguard.service.SensorService;
 @Component
 public class MqttListener {
 
-    private static final String SERVER_URI = "tcp://localhost:1883";
+    private static final String SERVER_URI = "tcp://broker.hivemq.com:1883";
     private static final String CLIENT_ID = "FireSafetySubscriberClient";
     private static final String TOPIC = "fire_safety/data";
 
@@ -23,6 +24,8 @@ public class MqttListener {
     private final ObjectMapper objectMapper;
     private final BuildingService buildingService;
     private final SensorService sensorService;
+
+    private MqttClient client;
 
     public MqttListener(MeasurementService measurementService, ObjectMapper objectMapper, BuildingService buildingService, SensorService sensorService) {
         this.measurementService = measurementService;
@@ -34,7 +37,7 @@ public class MqttListener {
     @PostConstruct
     public void connectAndSubscribe() {
         try {
-            MqttClient client = new MqttClient(SERVER_URI, CLIENT_ID);
+            client = new MqttClient(SERVER_URI, CLIENT_ID, new MemoryPersistence());
             MqttConnectOptions options = new MqttConnectOptions();
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);

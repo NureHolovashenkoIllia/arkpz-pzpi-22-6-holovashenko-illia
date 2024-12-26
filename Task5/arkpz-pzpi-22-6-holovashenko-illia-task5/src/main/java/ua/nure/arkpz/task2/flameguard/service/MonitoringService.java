@@ -29,14 +29,8 @@ public class MonitoringService {
     @Autowired
     private SensorSettingsRepository sensorSettingsRepository;
 
-    @Value("${monitoring.task.enabled:true}")
-    private boolean isTaskEnabled;
-
     @Scheduled(fixedDelayString = "#{@systemSettingsService.getMeasurementsCheckInterval()}")
     public void checkSensorStatus() {
-        if (!isTaskEnabled) {
-            return;
-        }
 
         List<Sensor> sensors = sensorRepository.findAllBySensorStatus("Enabled");
 
